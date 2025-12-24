@@ -1,0 +1,4899 @@
+{
+	"version": 3,
+	"configs":
+	[
+		{
+			"config_name": "old style",
+			"categories":
+			[
+				{
+					"category_name": "strength",
+					"x_position": 0.000000,
+					"y_position": 0.000000,
+					"width": 1182.000122,
+					"height": 174.000015,
+					"hero_ids":
+					[
+						102,
+						73,
+						2,
+						38,
+						78,
+						99,
+						96,
+						81,
+						51,
+						135,
+						69,
+						49,
+						107,
+						7,
+						103,
+						59,
+						91,
+						23,
+						104,
+						54,
+						77,
+						97,
+						136,
+						129,
+						60,
+						57,
+						110,
+						137,
+						14,
+						16,
+						28,
+						128,
+						71,
+						18,
+						29,
+						98,
+						19,
+						83,
+						100,
+						108,
+						85,
+						42
+					]
+				},
+				{
+					"category_name": "agility",
+					"x_position": 0.000000,
+					"y_position": 193.043503,
+					"width": 1182.000122,
+					"height": 174.000015,
+					"hero_ids":
+					[
+						1,
+						113,
+						4,
+						62,
+						61,
+						56,
+						6,
+						106,
+						41,
+						72,
+						123,
+						8,
+						80,
+						48,
+						94,
+						82,
+						9,
+						114,
+						10,
+						89,
+						88,
+						120,
+						44,
+						12,
+						15,
+						32,
+						11,
+						93,
+						35,
+						67,
+						46,
+						109,
+						95,
+						70,
+						20,
+						40,
+						47,
+						63
+					]
+				},
+				{
+					"category_name": "intelligence",
+					"x_position": 0.000000,
+					"y_position": 386.087006,
+					"width": 1182.000122,
+					"height": 174.000015,
+					"hero_ids":
+					[
+						68,
+						3,
+						65,
+						66,
+						5,
+						55,
+						119,
+						50,
+						43,
+						87,
+						58,
+						33,
+						121,
+						74,
+						64,
+						90,
+						52,
+						31,
+						25,
+						26,
+						138,
+						53,
+						36,
+						84,
+						111,
+						76,
+						13,
+						45,
+						39,
+						86,
+						79,
+						27,
+						75,
+						101,
+						17,
+						105,
+						34,
+						92,
+						126,
+						37,
+						21,
+						112,
+						30,
+						22
+					]
+				},
+				{
+					"category_name": "s",
+					"x_position": 0.000000,
+					"y_position": 592.087036,
+					"width": 300.000000,
+					"height": 100.000000,
+					"hero_ids":
+					[
+						44,
+						72,
+						18
+					]
+				},
+				{
+					"category_name": "a",
+					"x_position": 0.000000,
+					"y_position": 724.087036,
+					"width": 613.565247,
+					"height": 94.716408,
+					"hero_ids":
+					[
+						41,
+						89,
+						109,
+						93,
+						70,
+						6,
+						4,
+						46,
+						114
+					]
+				},
+				{
+					"category_name": "b",
+					"x_position": 0.000000,
+					"y_position": 850.803467,
+					"width": 615.354065,
+					"height": 95.754608,
+					"hero_ids":
+					[
+						95,
+						12,
+						15,
+						10,
+						67,
+						54,
+						73,
+						42,
+						48,
+						8
+					]
+				}
+			]
+		},
+		{
+			"config_name": "pos1 safe lane",
+			"categories":
+			[
+				{
+					"category_name": "",
+					"x_position": 0.000000,
+					"y_position": 0.000000,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						67
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 399.130463,
+					"y_position": 0.000000,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						1
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 798.260925,
+					"y_position": 0.000000,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						8
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 0.000000,
+					"y_position": 203.478287,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						93
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 399.130463,
+					"y_position": 203.478287,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						44
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 798.260925,
+					"y_position": 203.478287,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						48
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 0.000000,
+					"y_position": 406.956573,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						41
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 399.130463,
+					"y_position": 406.956573,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						6
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 798.260925,
+					"y_position": 406.956573,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						18
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 67.826096,
+					"y_position": 23.478264,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						36,
+						85,
+						66,
+						47,
+						80,
+						78,
+						82
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 466.956573,
+					"y_position": 23.478264,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						82,
+						80,
+						44,
+						104,
+						95,
+						28,
+						114
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 866.087036,
+					"y_position": 23.478264,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						10,
+						53,
+						61,
+						70,
+						91,
+						1,
+						60
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 67.826096,
+					"y_position": 226.956543,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						87,
+						52,
+						129,
+						4,
+						36,
+						105,
+						138
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 466.956573,
+					"y_position": 226.956543,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						57,
+						2,
+						10,
+						98,
+						137,
+						120,
+						69
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 866.087036,
+					"y_position": 226.956543,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						67,
+						82,
+						55,
+						12,
+						86,
+						99,
+						109
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 67.826096,
+					"y_position": 430.434814,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						82,
+						59,
+						2,
+						80,
+						81,
+						58,
+						1
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 466.956573,
+					"y_position": 430.434814,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						129,
+						12,
+						34,
+						77,
+						138,
+						67,
+						22
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 866.087036,
+					"y_position": 430.434814,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						95,
+						46,
+						112,
+						40,
+						49,
+						109,
+						83
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 67.826096,
+					"y_position": 114.782623,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						35,
+						138,
+						2,
+						6,
+						53,
+						48,
+						21
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 466.956573,
+					"y_position": 114.782623,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						94,
+						22,
+						67,
+						113,
+						68,
+						34,
+						17
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 866.087036,
+					"y_position": 114.782623,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						108,
+						67,
+						89,
+						72,
+						4,
+						29,
+						16
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 67.826096,
+					"y_position": 318.260895,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						99,
+						78,
+						106,
+						95,
+						102,
+						62,
+						83
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 466.956573,
+					"y_position": 318.260895,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						1,
+						80,
+						59,
+						103,
+						12,
+						68,
+						32
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 866.087036,
+					"y_position": 318.260895,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						80,
+						28,
+						60,
+						85,
+						77,
+						43,
+						32
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 67.826096,
+					"y_position": 521.739197,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						63,
+						55,
+						90,
+						4,
+						21,
+						78,
+						137
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 466.956573,
+					"y_position": 521.739197,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						52,
+						36,
+						82,
+						56,
+						80,
+						99,
+						63
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 866.087036,
+					"y_position": 521.739197,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						82,
+						89,
+						12,
+						77,
+						81,
+						61,
+						55
+					]
+				},
+				{
+					"category_name": "strength",
+					"x_position": 0.000000,
+					"y_position": 615.652222,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						73,
+						2,
+						99,
+						96,
+						81,
+						135,
+						69,
+						49,
+						107,
+						7,
+						103,
+						59,
+						23,
+						104,
+						54,
+						129,
+						60,
+						84,
+						57,
+						137,
+						14,
+						28,
+						71,
+						18,
+						29,
+						19,
+						83,
+						100,
+						108,
+						85,
+						42
+					]
+				},
+				{
+					"category_name": "agility",
+					"x_position": 593.478333,
+					"y_position": 615.652222,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						1,
+						113,
+						4,
+						62,
+						56,
+						6,
+						106,
+						41,
+						72,
+						123,
+						8,
+						48,
+						94,
+						82,
+						114,
+						10,
+						89,
+						44,
+						12,
+						15,
+						32,
+						11,
+						93,
+						35,
+						67,
+						46,
+						109,
+						95,
+						70,
+						47,
+						63
+					]
+				},
+				{
+					"category_name": "intelligence",
+					"x_position": 0.000000,
+					"y_position": 892.174011,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						68,
+						5,
+						43,
+						87,
+						58,
+						121,
+						64,
+						90,
+						52,
+						31,
+						25,
+						26,
+						138,
+						53,
+						36,
+						111,
+						76,
+						13,
+						45,
+						39,
+						86,
+						79,
+						27,
+						75,
+						101,
+						17,
+						34,
+						37,
+						30,
+						22
+					]
+				},
+				{
+					"category_name": "universal",
+					"x_position": 593.478333,
+					"y_position": 892.174011,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						102,
+						3,
+						65,
+						38,
+						78,
+						61,
+						66,
+						51,
+						55,
+						119,
+						50,
+						33,
+						74,
+						91,
+						80,
+						77,
+						97,
+						136,
+						9,
+						88,
+						120,
+						110,
+						16,
+						128,
+						105,
+						98,
+						20,
+						40,
+						92,
+						126,
+						21,
+						112
+					]
+				}
+			]
+		},
+		{
+			"config_name": "pos2 mid lane",
+			"categories":
+			[
+				{
+					"category_name": "",
+					"x_position": 0.000000,
+					"y_position": 0.000000,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						17
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 399.130463,
+					"y_position": 0.000000,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						34
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 798.260925,
+					"y_position": 0.000000,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						126
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 0.000000,
+					"y_position": 203.478287,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						76
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 399.130463,
+					"y_position": 203.478287,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						11
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 798.260925,
+					"y_position": 203.478287,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						13
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 0.000000,
+					"y_position": 406.956573,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						106
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 399.130463,
+					"y_position": 406.956573,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						39
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 798.260925,
+					"y_position": 406.956573,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						22
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 67.826096,
+					"y_position": 23.478264,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						82,
+						1,
+						80,
+						95,
+						32,
+						111,
+						59
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 466.956573,
+					"y_position": 23.478264,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						65,
+						45,
+						1,
+						88,
+						46,
+						92,
+						43
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 866.087036,
+					"y_position": 23.478264,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						82,
+						89,
+						59,
+						60,
+						36,
+						80,
+						106
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 67.826096,
+					"y_position": 226.956543,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						92,
+						59,
+						46,
+						61,
+						12,
+						86,
+						81
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 466.956573,
+					"y_position": 226.956543,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						65,
+						109,
+						46,
+						22,
+						12,
+						113,
+						70
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 866.087036,
+					"y_position": 226.956543,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						60,
+						46,
+						80,
+						32,
+						35,
+						59,
+						19
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 67.826096,
+					"y_position": 430.434814,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						59,
+						93,
+						95,
+						11,
+						114,
+						36,
+						111
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 466.956573,
+					"y_position": 430.434814,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						13,
+						59,
+						104,
+						25,
+						53,
+						106,
+						33
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 866.087036,
+					"y_position": 430.434814,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						1,
+						82,
+						17,
+						66,
+						92,
+						61,
+						80
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 67.826096,
+					"y_position": 114.782623,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						35,
+						22,
+						68,
+						61,
+						65,
+						113,
+						6
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 466.956573,
+					"y_position": 114.782623,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						6,
+						112,
+						2,
+						138,
+						123,
+						95,
+						104
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 866.087036,
+					"y_position": 114.782623,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						74,
+						68,
+						129,
+						35,
+						6,
+						44,
+						97
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 67.826096,
+					"y_position": 318.260895,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						98,
+						2,
+						57,
+						95,
+						111,
+						93,
+						108
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 466.956573,
+					"y_position": 318.260895,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						82,
+						1,
+						36,
+						37,
+						106,
+						75,
+						32
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 866.087036,
+					"y_position": 318.260895,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						12,
+						39,
+						93,
+						34,
+						76,
+						120,
+						21
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 67.826096,
+					"y_position": 521.739197,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						12,
+						92,
+						67,
+						77,
+						38,
+						89,
+						126
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 466.956573,
+					"y_position": 521.739197,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						65,
+						98,
+						78,
+						67,
+						114,
+						120,
+						21
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 866.087036,
+					"y_position": 521.739197,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						16,
+						34,
+						6,
+						11,
+						114,
+						109,
+						68
+					]
+				},
+				{
+					"category_name": "strength",
+					"x_position": 0.000000,
+					"y_position": 615.652222,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						73,
+						2,
+						99,
+						96,
+						81,
+						135,
+						69,
+						49,
+						107,
+						7,
+						103,
+						59,
+						23,
+						104,
+						54,
+						129,
+						60,
+						84,
+						57,
+						137,
+						14,
+						28,
+						71,
+						18,
+						29,
+						19,
+						83,
+						100,
+						108,
+						85,
+						42
+					]
+				},
+				{
+					"category_name": "agility",
+					"x_position": 593.478333,
+					"y_position": 615.652222,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						1,
+						113,
+						4,
+						62,
+						56,
+						6,
+						106,
+						41,
+						72,
+						123,
+						8,
+						48,
+						94,
+						82,
+						114,
+						10,
+						89,
+						44,
+						12,
+						15,
+						32,
+						11,
+						93,
+						35,
+						67,
+						46,
+						109,
+						95,
+						70,
+						47,
+						63
+					]
+				},
+				{
+					"category_name": "intelligence",
+					"x_position": 0.000000,
+					"y_position": 892.174011,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						68,
+						5,
+						43,
+						87,
+						58,
+						121,
+						64,
+						90,
+						52,
+						31,
+						25,
+						26,
+						138,
+						53,
+						36,
+						111,
+						76,
+						13,
+						45,
+						39,
+						86,
+						79,
+						27,
+						75,
+						101,
+						17,
+						34,
+						37,
+						30,
+						22
+					]
+				},
+				{
+					"category_name": "universal",
+					"x_position": 593.478333,
+					"y_position": 892.174011,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						102,
+						3,
+						65,
+						38,
+						78,
+						61,
+						66,
+						51,
+						55,
+						119,
+						50,
+						33,
+						74,
+						91,
+						80,
+						77,
+						97,
+						136,
+						9,
+						88,
+						120,
+						110,
+						16,
+						128,
+						105,
+						98,
+						20,
+						40,
+						92,
+						126,
+						21,
+						112
+					]
+				}
+			]
+		},
+		{
+			"config_name": "pos3 off lane",
+			"categories":
+			[
+				{
+					"category_name": "",
+					"x_position": 0.000000,
+					"y_position": 0.000000,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						129
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 399.130463,
+					"y_position": 0.000000,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						29
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 798.260925,
+					"y_position": 0.000000,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						55
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 0.000000,
+					"y_position": 203.478287,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						38
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 399.130463,
+					"y_position": 203.478287,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						28
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 798.260925,
+					"y_position": 203.478287,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						98
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 0.000000,
+					"y_position": 406.956573,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						60
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 399.130463,
+					"y_position": 406.956573,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						78
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 798.260925,
+					"y_position": 406.956573,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						135
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 67.826096,
+					"y_position": 23.478264,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						12,
+						80,
+						1,
+						59,
+						82,
+						106,
+						8
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 466.956573,
+					"y_position": 23.478264,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						66,
+						103,
+						73,
+						98,
+						61,
+						8,
+						93
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 866.087036,
+					"y_position": 23.478264,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						80,
+						41,
+						111,
+						4,
+						63,
+						56,
+						70
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 67.826096,
+					"y_position": 226.956543,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						94,
+						108,
+						112,
+						73,
+						99,
+						90,
+						106
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 466.956573,
+					"y_position": 226.956543,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						89,
+						109,
+						12,
+						95,
+						138,
+						38,
+						29
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 866.087036,
+					"y_position": 226.956543,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						76,
+						75,
+						45,
+						4,
+						121,
+						43,
+						94
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 67.826096,
+					"y_position": 430.434814,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						89,
+						82,
+						109,
+						95,
+						59,
+						81,
+						12
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 466.956573,
+					"y_position": 430.434814,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						93,
+						63,
+						1,
+						41,
+						39,
+						32,
+						104
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 866.087036,
+					"y_position": 430.434814,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						112,
+						56,
+						75,
+						99,
+						41,
+						110,
+						63
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 67.826096,
+					"y_position": 114.782623,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						6,
+						93,
+						35,
+						21,
+						123,
+						104,
+						71
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 466.956573,
+					"y_position": 114.782623,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						89,
+						81,
+						75,
+						28,
+						67,
+						42,
+						101
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 866.087036,
+					"y_position": 114.782623,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						94,
+						12,
+						109,
+						102,
+						49,
+						89,
+						46
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 67.826096,
+					"y_position": 318.260895,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						12,
+						92,
+						80,
+						28,
+						26,
+						60,
+						54
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 466.956573,
+					"y_position": 318.260895,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						1,
+						80,
+						56,
+						14,
+						54,
+						52,
+						67
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 866.087036,
+					"y_position": 318.260895,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						89,
+						82,
+						2,
+						12,
+						81,
+						77,
+						59
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 67.826096,
+					"y_position": 521.739197,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						13,
+						8,
+						126,
+						1,
+						105,
+						17,
+						93
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 466.956573,
+					"y_position": 521.739197,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						67,
+						89,
+						15,
+						70,
+						109,
+						138,
+						80
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 866.087036,
+					"y_position": 521.739197,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						82,
+						89,
+						104,
+						67,
+						81,
+						12,
+						93
+					]
+				},
+				{
+					"category_name": "strength",
+					"x_position": 0.000000,
+					"y_position": 615.652222,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						73,
+						2,
+						99,
+						96,
+						81,
+						135,
+						69,
+						49,
+						107,
+						7,
+						103,
+						59,
+						23,
+						104,
+						54,
+						129,
+						60,
+						84,
+						57,
+						137,
+						14,
+						28,
+						71,
+						18,
+						29,
+						19,
+						83,
+						100,
+						108,
+						85,
+						42
+					]
+				},
+				{
+					"category_name": "agility",
+					"x_position": 593.478333,
+					"y_position": 615.652222,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						1,
+						113,
+						4,
+						62,
+						56,
+						6,
+						106,
+						41,
+						72,
+						123,
+						8,
+						48,
+						94,
+						82,
+						114,
+						10,
+						89,
+						44,
+						12,
+						15,
+						32,
+						11,
+						93,
+						35,
+						67,
+						46,
+						109,
+						95,
+						70,
+						47,
+						63
+					]
+				},
+				{
+					"category_name": "intelligence",
+					"x_position": 0.000000,
+					"y_position": 892.174011,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						68,
+						5,
+						43,
+						87,
+						58,
+						121,
+						64,
+						90,
+						52,
+						31,
+						25,
+						26,
+						138,
+						53,
+						36,
+						111,
+						76,
+						13,
+						45,
+						39,
+						86,
+						79,
+						27,
+						75,
+						101,
+						17,
+						34,
+						37,
+						30,
+						22
+					]
+				},
+				{
+					"category_name": "universal",
+					"x_position": 593.478333,
+					"y_position": 892.174011,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						102,
+						3,
+						65,
+						38,
+						78,
+						61,
+						66,
+						51,
+						55,
+						119,
+						50,
+						33,
+						74,
+						91,
+						80,
+						77,
+						97,
+						136,
+						9,
+						88,
+						120,
+						110,
+						16,
+						128,
+						105,
+						98,
+						20,
+						40,
+						92,
+						126,
+						21,
+						112
+					]
+				}
+			]
+		},
+		{
+			"config_name": "pos4 soft support",
+			"categories":
+			[
+				{
+					"category_name": "",
+					"x_position": 0.000000,
+					"y_position": 0.000000,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						88
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 399.130463,
+					"y_position": 0.000000,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						71
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 798.260925,
+					"y_position": 0.000000,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						7
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 0.000000,
+					"y_position": 203.478287,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						123
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 399.130463,
+					"y_position": 203.478287,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						103
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 798.260925,
+					"y_position": 203.478287,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						85
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 0.000000,
+					"y_position": 406.956573,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						100
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 399.130463,
+					"y_position": 406.956573,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						105
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 798.260925,
+					"y_position": 406.956573,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						62
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 67.826096,
+					"y_position": 23.478264,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						46,
+						54,
+						23,
+						89,
+						18,
+						81,
+						84
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 466.956573,
+					"y_position": 23.478264,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						36,
+						108,
+						119,
+						10,
+						106,
+						51,
+						129
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 866.087036,
+					"y_position": 23.478264,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						46,
+						47,
+						51,
+						59,
+						35,
+						60,
+						73
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 67.826096,
+					"y_position": 226.956543,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						98,
+						34,
+						129,
+						13,
+						65,
+						96,
+						113
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 466.956573,
+					"y_position": 226.956543,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						95,
+						44,
+						56,
+						54,
+						42,
+						41,
+						21
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 866.087036,
+					"y_position": 226.956543,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						94,
+						48,
+						136,
+						53,
+						35,
+						68,
+						120
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 67.826096,
+					"y_position": 430.434814,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						46,
+						82,
+						138,
+						106,
+						61,
+						89,
+						114
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 466.956573,
+					"y_position": 430.434814,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						46,
+						65,
+						60,
+						34,
+						94,
+						45,
+						129
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 866.087036,
+					"y_position": 430.434814,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						89,
+						93,
+						59,
+						82,
+						57,
+						102,
+						81
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 67.826096,
+					"y_position": 114.782623,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						10,
+						34,
+						35,
+						98,
+						135,
+						48,
+						44
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 466.956573,
+					"y_position": 114.782623,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						61,
+						104,
+						77,
+						60,
+						54,
+						11,
+						8
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 866.087036,
+					"y_position": 114.782623,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						82,
+						77,
+						89,
+						61,
+						12,
+						1,
+						57
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 67.826096,
+					"y_position": 318.260895,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						99,
+						1,
+						80,
+						59,
+						103,
+						82,
+						94
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 466.956573,
+					"y_position": 318.260895,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						82,
+						29,
+						89,
+						12,
+						67,
+						91,
+						10
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 866.087036,
+					"y_position": 318.260895,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						67,
+						42,
+						102,
+						111,
+						52,
+						96,
+						92
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 67.826096,
+					"y_position": 521.739197,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						111,
+						44,
+						101,
+						21,
+						76,
+						22,
+						104
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 466.956573,
+					"y_position": 521.739197,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						93,
+						82,
+						89,
+						95,
+						12,
+						80,
+						77
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 866.087036,
+					"y_position": 521.739197,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						56,
+						32,
+						60,
+						67,
+						77,
+						9,
+						11
+					]
+				},
+				{
+					"category_name": "strength",
+					"x_position": 0.000000,
+					"y_position": 615.652222,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						73,
+						2,
+						99,
+						96,
+						81,
+						135,
+						69,
+						49,
+						107,
+						7,
+						103,
+						59,
+						23,
+						104,
+						54,
+						129,
+						60,
+						84,
+						57,
+						137,
+						14,
+						28,
+						71,
+						18,
+						29,
+						19,
+						83,
+						100,
+						108,
+						85,
+						42
+					]
+				},
+				{
+					"category_name": "agility",
+					"x_position": 593.478333,
+					"y_position": 615.652222,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						1,
+						113,
+						4,
+						62,
+						56,
+						6,
+						106,
+						41,
+						72,
+						123,
+						8,
+						48,
+						94,
+						82,
+						114,
+						10,
+						89,
+						44,
+						12,
+						15,
+						32,
+						11,
+						93,
+						35,
+						67,
+						46,
+						109,
+						95,
+						70,
+						47,
+						63
+					]
+				},
+				{
+					"category_name": "intelligence",
+					"x_position": 0.000000,
+					"y_position": 892.174011,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						68,
+						5,
+						43,
+						87,
+						58,
+						121,
+						64,
+						90,
+						52,
+						31,
+						25,
+						26,
+						138,
+						53,
+						36,
+						111,
+						76,
+						13,
+						45,
+						39,
+						86,
+						79,
+						27,
+						75,
+						101,
+						17,
+						34,
+						37,
+						30,
+						22
+					]
+				},
+				{
+					"category_name": "universal",
+					"x_position": 593.478333,
+					"y_position": 892.174011,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						102,
+						3,
+						65,
+						38,
+						78,
+						61,
+						66,
+						51,
+						55,
+						119,
+						50,
+						33,
+						74,
+						91,
+						80,
+						77,
+						97,
+						136,
+						9,
+						88,
+						120,
+						110,
+						16,
+						128,
+						105,
+						98,
+						20,
+						40,
+						92,
+						126,
+						21,
+						112
+					]
+				}
+			]
+		},
+		{
+			"config_name": "pos5 hard support",
+			"categories":
+			[
+				{
+					"category_name": "",
+					"x_position": 0.000000,
+					"y_position": 0.000000,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						87
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 399.130463,
+					"y_position": 0.000000,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						111
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 798.260925,
+					"y_position": 0.000000,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						50
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 0.000000,
+					"y_position": 203.478287,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						37
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 399.130463,
+					"y_position": 203.478287,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						31
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 798.260925,
+					"y_position": 203.478287,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						27
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 0.000000,
+					"y_position": 406.956573,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						26
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 399.130463,
+					"y_position": 406.956573,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						68
+					]
+				},
+				{
+					"category_name": "",
+					"x_position": 798.260925,
+					"y_position": 406.956573,
+					"width": 122.608711,
+					"height": 100.434792,
+					"hero_ids":
+					[
+						64
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 67.826096,
+					"y_position": 23.478264,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						59,
+						44,
+						35,
+						53,
+						111,
+						80,
+						79
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 466.956573,
+					"y_position": 23.478264,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						15,
+						79,
+						77,
+						81,
+						76,
+						46,
+						85
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 866.087036,
+					"y_position": 23.478264,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						57,
+						68,
+						45,
+						138,
+						93,
+						114,
+						76
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 67.826096,
+					"y_position": 226.956543,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						61,
+						99,
+						63,
+						11,
+						59,
+						93,
+						62
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 466.956573,
+					"y_position": 226.956543,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						79,
+						34,
+						1,
+						63,
+						45,
+						110,
+						33
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 866.087036,
+					"y_position": 226.956543,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						82,
+						12,
+						89,
+						15,
+						109,
+						81,
+						38
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 67.826096,
+					"y_position": 430.434814,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						38,
+						15,
+						69,
+						49,
+						46,
+						86,
+						29
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 466.956573,
+					"y_position": 430.434814,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						1,
+						77,
+						113,
+						17,
+						12,
+						63,
+						126
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 866.087036,
+					"y_position": 430.434814,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						86,
+						8,
+						29,
+						56,
+						10,
+						90,
+						63
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 67.826096,
+					"y_position": 114.782623,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						93,
+						36,
+						1,
+						16,
+						99,
+						8,
+						17
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 466.956573,
+					"y_position": 114.782623,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						55,
+						57,
+						104,
+						113,
+						17,
+						36,
+						106
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 866.087036,
+					"y_position": 114.782623,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						89,
+						96,
+						113,
+						67,
+						104,
+						42,
+						82
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 67.826096,
+					"y_position": 318.260895,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						82,
+						67,
+						109,
+						42,
+						113,
+						2,
+						81
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 466.956573,
+					"y_position": 318.260895,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						82,
+						89,
+						81,
+						57,
+						104,
+						71,
+						54
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 866.087036,
+					"y_position": 318.260895,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						70,
+						95,
+						41,
+						59,
+						8,
+						47,
+						34
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 67.826096,
+					"y_position": 521.739197,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						89,
+						95,
+						104,
+						82,
+						93,
+						8,
+						59
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 466.956573,
+					"y_position": 521.739197,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						59,
+						36,
+						52,
+						57,
+						91,
+						50,
+						102
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 866.087036,
+					"y_position": 521.739197,
+					"width": 331.304382,
+					"height": 76.956528,
+					"hero_ids":
+					[
+						82,
+						89,
+						42,
+						81,
+						77,
+						12,
+						80
+					]
+				},
+				{
+					"category_name": "strength",
+					"x_position": 0.000000,
+					"y_position": 615.652222,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						73,
+						2,
+						99,
+						96,
+						81,
+						135,
+						69,
+						49,
+						107,
+						7,
+						103,
+						59,
+						23,
+						104,
+						54,
+						129,
+						60,
+						84,
+						57,
+						137,
+						14,
+						28,
+						71,
+						18,
+						29,
+						19,
+						83,
+						100,
+						108,
+						85,
+						42
+					]
+				},
+				{
+					"category_name": "agility",
+					"x_position": 593.478333,
+					"y_position": 615.652222,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						1,
+						113,
+						4,
+						62,
+						56,
+						6,
+						106,
+						41,
+						72,
+						123,
+						8,
+						48,
+						94,
+						82,
+						114,
+						10,
+						89,
+						44,
+						12,
+						15,
+						32,
+						11,
+						93,
+						35,
+						67,
+						46,
+						109,
+						95,
+						70,
+						47,
+						63
+					]
+				},
+				{
+					"category_name": "intelligence",
+					"x_position": 0.000000,
+					"y_position": 892.174011,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						68,
+						5,
+						43,
+						87,
+						58,
+						121,
+						64,
+						90,
+						52,
+						31,
+						25,
+						26,
+						138,
+						53,
+						36,
+						111,
+						76,
+						13,
+						45,
+						39,
+						86,
+						79,
+						27,
+						75,
+						101,
+						17,
+						34,
+						37,
+						30,
+						22
+					]
+				},
+				{
+					"category_name": "universal",
+					"x_position": 593.478333,
+					"y_position": 892.174011,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						102,
+						3,
+						65,
+						38,
+						78,
+						61,
+						66,
+						51,
+						55,
+						119,
+						50,
+						33,
+						74,
+						91,
+						80,
+						77,
+						97,
+						136,
+						9,
+						88,
+						120,
+						110,
+						16,
+						128,
+						105,
+						98,
+						20,
+						40,
+						92,
+						126,
+						21,
+						112
+					]
+				}
+			]
+		},
+		{
+			"config_name": "hero pool",
+			"categories":
+			[
+				{
+					"category_name": "hard carry (macro)",
+					"x_position": 0.000000,
+					"y_position": 0.000000,
+					"width": 300.000031,
+					"height": 97.826096,
+					"hero_ids":
+					[
+						12,
+						109,
+						89
+					]
+				},
+				{
+					"category_name": "carry (strong)",
+					"x_position": 399.130463,
+					"y_position": 0.000000,
+					"width": 300.000031,
+					"height": 97.826096,
+					"hero_ids":
+					[
+						70,
+						54,
+						42
+					]
+				},
+				{
+					"category_name": "mid lane (right click)",
+					"x_position": 798.260925,
+					"y_position": 0.000000,
+					"width": 300.000031,
+					"height": 97.826096,
+					"hero_ids":
+					[
+						46,
+						35,
+						138
+					]
+				},
+				{
+					"category_name": "off lane (vanguard)",
+					"x_position": 0.000000,
+					"y_position": 309.130463,
+					"width": 300.000031,
+					"height": 97.826096,
+					"hero_ids":
+					[
+						96,
+						108,
+						99,
+						2
+					]
+				},
+				{
+					"category_name": "soft support (vessel)",
+					"x_position": 399.130463,
+					"y_position": 309.130463,
+					"width": 300.000031,
+					"height": 97.826096,
+					"hero_ids":
+					[
+						51,
+						110,
+						40,
+						107
+					]
+				},
+				{
+					"category_name": "hard support (glimmer)",
+					"x_position": 798.260925,
+					"y_position": 309.130463,
+					"width": 300.000031,
+					"height": 97.826096,
+					"hero_ids":
+					[
+						5,
+						30,
+						3,
+						45
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 0.000000,
+					"y_position": 114.782623,
+					"width": 397.826141,
+					"height": 78.260880,
+					"hero_ids":
+					[
+						38,
+						2,
+						16,
+						52,
+						108,
+						98,
+						55,
+						106
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 399.130463,
+					"y_position": 114.782623,
+					"width": 397.826141,
+					"height": 78.260880,
+					"hero_ids":
+					[
+						12,
+						99,
+						89,
+						61,
+						85,
+						95,
+						38,
+						109
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 798.260925,
+					"y_position": 114.782623,
+					"width": 397.826141,
+					"height": 78.260880,
+					"hero_ids":
+					[
+						67,
+						12,
+						113,
+						129,
+						65,
+						53,
+						58,
+						14
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 0.000000,
+					"y_position": 423.913086,
+					"width": 397.826141,
+					"height": 78.260880,
+					"hero_ids":
+					[
+						47,
+						98,
+						8,
+						76,
+						39,
+						75,
+						114,
+						36
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 399.130463,
+					"y_position": 423.913086,
+					"width": 397.826141,
+					"height": 78.260880,
+					"hero_ids":
+					[
+						59,
+						61,
+						8,
+						82,
+						136,
+						128,
+						63,
+						10
+					]
+				},
+				{
+					"category_name": "ban/avoid",
+					"x_position": 798.260925,
+					"y_position": 423.913086,
+					"width": 397.826141,
+					"height": 78.260880,
+					"hero_ids":
+					[
+						14,
+						6,
+						61,
+						35,
+						33,
+						38,
+						43,
+						25
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 0.000000,
+					"y_position": 210.000015,
+					"width": 397.826141,
+					"height": 78.260880,
+					"hero_ids":
+					[
+						60,
+						92,
+						42,
+						47,
+						81,
+						28,
+						46,
+						56
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 399.130463,
+					"y_position": 210.000015,
+					"width": 397.826141,
+					"height": 78.260880,
+					"hero_ids":
+					[
+						103,
+						14,
+						88,
+						104,
+						76,
+						96,
+						4,
+						18
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 798.260925,
+					"y_position": 210.000015,
+					"width": 397.826141,
+					"height": 78.260880,
+					"hero_ids":
+					[
+						36,
+						13,
+						18,
+						114,
+						7,
+						32,
+						136,
+						57
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 0.000000,
+					"y_position": 519.130493,
+					"width": 397.826141,
+					"height": 78.260880,
+					"hero_ids":
+					[
+						89,
+						82,
+						94,
+						95,
+						81,
+						92,
+						21,
+						12
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 399.130463,
+					"y_position": 519.130493,
+					"width": 397.826141,
+					"height": 78.260880,
+					"hero_ids":
+					[
+						2,
+						67,
+						86,
+						6,
+						99,
+						114,
+						37,
+						34
+					]
+				},
+				{
+					"category_name": "pick against",
+					"x_position": 798.260925,
+					"y_position": 519.130493,
+					"width": 397.826141,
+					"height": 78.260880,
+					"hero_ids":
+					[
+						34,
+						95,
+						2,
+						98,
+						108,
+						39,
+						12,
+						36
+					]
+				},
+				{
+					"category_name": "strength",
+					"x_position": 0.000000,
+					"y_position": 615.652222,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						73,
+						2,
+						99,
+						96,
+						81,
+						135,
+						69,
+						49,
+						107,
+						7,
+						103,
+						59,
+						23,
+						104,
+						54,
+						129,
+						60,
+						84,
+						57,
+						137,
+						14,
+						28,
+						71,
+						18,
+						29,
+						19,
+						83,
+						100,
+						108,
+						85,
+						42
+					]
+				},
+				{
+					"category_name": "agility",
+					"x_position": 593.478333,
+					"y_position": 615.652222,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						1,
+						113,
+						4,
+						62,
+						56,
+						6,
+						106,
+						41,
+						72,
+						123,
+						8,
+						48,
+						94,
+						82,
+						114,
+						10,
+						89,
+						44,
+						12,
+						15,
+						32,
+						11,
+						93,
+						35,
+						67,
+						46,
+						109,
+						95,
+						70,
+						47,
+						63
+					]
+				},
+				{
+					"category_name": "intelligence",
+					"x_position": 0.000000,
+					"y_position": 892.174011,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						68,
+						5,
+						43,
+						87,
+						58,
+						121,
+						64,
+						90,
+						52,
+						31,
+						25,
+						26,
+						138,
+						53,
+						36,
+						111,
+						76,
+						13,
+						45,
+						39,
+						86,
+						79,
+						27,
+						75,
+						101,
+						17,
+						34,
+						37,
+						30,
+						22
+					]
+				},
+				{
+					"category_name": "universal",
+					"x_position": 593.478333,
+					"y_position": 892.174011,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						102,
+						3,
+						65,
+						38,
+						78,
+						61,
+						66,
+						51,
+						55,
+						119,
+						50,
+						33,
+						74,
+						91,
+						80,
+						77,
+						97,
+						136,
+						9,
+						88,
+						120,
+						110,
+						16,
+						128,
+						105,
+						98,
+						20,
+						40,
+						92,
+						126,
+						21,
+						112
+					]
+				}
+			]
+		},
+		{
+			"config_name": "captain mode",
+			"categories":
+			[
+				{
+					"category_name": "a 3-4-5-2-1",
+					"x_position": 0.000000,
+					"y_position": 0.000000,
+					"width": 306.521759,
+					"height": 90.000008,
+					"hero_ids":
+					[
+						108,
+						105,
+						45,
+						126,
+						18
+					]
+				},
+				{
+					"category_name": "a 3-4-5-1-2",
+					"x_position": 399.130463,
+					"y_position": 0.000000,
+					"width": 306.521759,
+					"height": 90.000008,
+					"hero_ids":
+					[
+						38,
+						9,
+						51,
+						138,
+						17
+					]
+				},
+				{
+					"category_name": "a 2-4-1-5-3",
+					"x_position": 798.260925,
+					"y_position": 0.000000,
+					"width": 306.521759,
+					"height": 90.000008,
+					"hero_ids":
+					[
+						90,
+						114,
+						73,
+						5,
+						2
+					]
+				},
+				{
+					"category_name": "a 4-3-5-2-1",
+					"x_position": 0.000000,
+					"y_position": 307.826111,
+					"width": 306.521759,
+					"height": 90.000008,
+					"hero_ids":
+					[
+						86,
+						108,
+						5,
+						106,
+						46
+					]
+				},
+				{
+					"category_name": "a 3-2-4-5-1",
+					"x_position": 399.130463,
+					"y_position": 307.826111,
+					"width": 306.521759,
+					"height": 90.000008,
+					"hero_ids":
+					[
+						69,
+						17,
+						101,
+						5,
+						41
+					]
+				},
+				{
+					"category_name": "a 2-4-3-1-5",
+					"x_position": 798.260925,
+					"y_position": 307.826111,
+					"width": 306.521759,
+					"height": 90.000008,
+					"hero_ids":
+					[
+						17,
+						45,
+						135,
+						114,
+						9
+					]
+				},
+				{
+					"category_name": "b 3-2-5-4-1",
+					"x_position": 0.000000,
+					"y_position": 106.956535,
+					"width": 306.521759,
+					"height": 90.000008,
+					"hero_ids":
+					[
+						108,
+						49,
+						75,
+						90,
+						18
+					]
+				},
+				{
+					"category_name": "b 3-1-5-4-2",
+					"x_position": 399.130463,
+					"y_position": 106.956535,
+					"width": 306.521759,
+					"height": 90.000008,
+					"hero_ids":
+					[
+						38,
+						94,
+						103,
+						123,
+						120
+					]
+				},
+				{
+					"category_name": "b 4-3-2-5-1",
+					"x_position": 798.260925,
+					"y_position": 106.956535,
+					"width": 306.521759,
+					"height": 90.000008,
+					"hero_ids":
+					[
+						90,
+						108,
+						106,
+						9,
+						94
+					]
+				},
+				{
+					"category_name": "b 5-3-4-2-1",
+					"x_position": 0.000000,
+					"y_position": 414.782654,
+					"width": 306.521759,
+					"height": 90.000008,
+					"hero_ids":
+					[
+						86,
+						38,
+						90,
+						120,
+						109
+					]
+				},
+				{
+					"category_name": "b 3-4-5-1-2",
+					"x_position": 399.130463,
+					"y_position": 414.782654,
+					"width": 306.521759,
+					"height": 90.000008,
+					"hero_ids":
+					[
+						69,
+						62,
+						5,
+						73,
+						34
+					]
+				},
+				{
+					"category_name": "b 2-5-3-4-1",
+					"x_position": 798.260925,
+					"y_position": 414.782654,
+					"width": 306.521759,
+					"height": 90.000008,
+					"hero_ids":
+					[
+						17,
+						91,
+						4,
+						86,
+						109
+					]
+				},
+				{
+					"category_name": "ban",
+					"x_position": 0.000000,
+					"y_position": 213.913071,
+					"width": 397.826141,
+					"height": 75.652184,
+					"hero_ids":
+					[
+						98,
+						86,
+						93,
+						70,
+						17,
+						114,
+						138,
+						29
+					]
+				},
+				{
+					"category_name": "ban",
+					"x_position": 399.130463,
+					"y_position": 213.913071,
+					"width": 397.826141,
+					"height": 75.652184,
+					"hero_ids":
+					[
+						66,
+						4,
+						93,
+						61,
+						55,
+						89,
+						73,
+						114
+					]
+				},
+				{
+					"category_name": "ban",
+					"x_position": 798.260925,
+					"y_position": 213.913071,
+					"width": 397.826141,
+					"height": 75.652184,
+					"hero_ids":
+					[
+						66,
+						38,
+						137,
+						12,
+						109,
+						39,
+						126,
+						93
+					]
+				},
+				{
+					"category_name": "ban",
+					"x_position": 0.000000,
+					"y_position": 521.739197,
+					"width": 397.826141,
+					"height": 75.652184,
+					"hero_ids":
+					[
+						73,
+						58,
+						93,
+						114,
+						70,
+						85,
+						110,
+						23
+					]
+				},
+				{
+					"category_name": "ban",
+					"x_position": 399.130463,
+					"y_position": 521.739197,
+					"width": 397.826141,
+					"height": 75.652184,
+					"hero_ids":
+					[
+						38,
+						78,
+						13,
+						89,
+						106,
+						104,
+						108,
+						97
+					]
+				},
+				{
+					"category_name": "ban",
+					"x_position": 798.260925,
+					"y_position": 521.739197,
+					"width": 397.826141,
+					"height": 75.652184,
+					"hero_ids":
+					[
+						66,
+						11,
+						13,
+						88,
+						75,
+						106,
+						47,
+						12
+					]
+				},
+				{
+					"category_name": "strength",
+					"x_position": 0.000000,
+					"y_position": 615.652222,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						73,
+						2,
+						99,
+						96,
+						81,
+						135,
+						69,
+						49,
+						107,
+						7,
+						103,
+						59,
+						23,
+						104,
+						54,
+						129,
+						60,
+						84,
+						57,
+						137,
+						14,
+						28,
+						71,
+						18,
+						29,
+						19,
+						83,
+						100,
+						108,
+						85,
+						42
+					]
+				},
+				{
+					"category_name": "agility",
+					"x_position": 593.478333,
+					"y_position": 615.652222,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						1,
+						113,
+						4,
+						62,
+						56,
+						6,
+						106,
+						41,
+						72,
+						123,
+						8,
+						48,
+						94,
+						82,
+						114,
+						10,
+						89,
+						44,
+						12,
+						15,
+						32,
+						11,
+						93,
+						35,
+						67,
+						46,
+						109,
+						95,
+						70,
+						47,
+						63
+					]
+				},
+				{
+					"category_name": "intelligence",
+					"x_position": 0.000000,
+					"y_position": 892.174011,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						68,
+						5,
+						43,
+						87,
+						58,
+						121,
+						64,
+						90,
+						52,
+						31,
+						25,
+						26,
+						138,
+						53,
+						36,
+						111,
+						76,
+						13,
+						45,
+						39,
+						86,
+						79,
+						27,
+						75,
+						101,
+						17,
+						34,
+						37,
+						30,
+						22
+					]
+				},
+				{
+					"category_name": "universal",
+					"x_position": 593.478333,
+					"y_position": 892.174011,
+					"width": 568.695679,
+					"height": 256.956543,
+					"hero_ids":
+					[
+						102,
+						3,
+						65,
+						38,
+						78,
+						61,
+						66,
+						51,
+						55,
+						119,
+						50,
+						33,
+						74,
+						91,
+						80,
+						77,
+						97,
+						136,
+						9,
+						88,
+						120,
+						110,
+						16,
+						128,
+						105,
+						98,
+						20,
+						40,
+						92,
+						126,
+						21,
+						112
+					]
+				}
+			]
+		},
+		{
+			"config_name": "Пользовательская сетка",
+			"categories":
+			[
+				{
+					"category_name": "Сила",
+					"x_position": 0.000000,
+					"y_position": 0.000000,
+					"width": 567.950378,
+					"height": 256.695679,
+					"hero_ids":
+					[
+						73,
+						2,
+						99,
+						96,
+						81,
+						135,
+						69,
+						49,
+						107,
+						7,
+						103,
+						59,
+						23,
+						104,
+						54,
+						129,
+						60,
+						84,
+						57,
+						137,
+						14,
+						28,
+						71,
+						18,
+						29,
+						19,
+						83,
+						100,
+						108,
+						85,
+						42
+					]
+				},
+				{
+					"category_name": "Ловкость",
+					"x_position": 593.888245,
+					"y_position": 0.000000,
+					"width": 567.950378,
+					"height": 256.695679,
+					"hero_ids":
+					[
+						1,
+						113,
+						4,
+						62,
+						56,
+						6,
+						106,
+						41,
+						72,
+						123,
+						8,
+						48,
+						94,
+						82,
+						114,
+						10,
+						89,
+						44,
+						12,
+						15,
+						32,
+						11,
+						93,
+						35,
+						67,
+						46,
+						109,
+						95,
+						70,
+						47,
+						63
+					]
+				},
+				{
+					"category_name": "Интеллект",
+					"x_position": 0.000000,
+					"y_position": 284.422394,
+					"width": 567.950378,
+					"height": 256.695679,
+					"hero_ids":
+					[
+						68,
+						5,
+						43,
+						87,
+						58,
+						121,
+						64,
+						90,
+						52,
+						31,
+						25,
+						26,
+						138,
+						53,
+						36,
+						111,
+						76,
+						13,
+						45,
+						39,
+						86,
+						79,
+						27,
+						75,
+						101,
+						17,
+						34,
+						37,
+						30,
+						22
+					]
+				},
+				{
+					"category_name": "Универсальные",
+					"x_position": 593.888245,
+					"y_position": 284.422394,
+					"width": 567.950378,
+					"height": 256.695679,
+					"hero_ids":
+					[
+						102,
+						3,
+						65,
+						38,
+						78,
+						61,
+						66,
+						51,
+						55,
+						119,
+						50,
+						33,
+						74,
+						91,
+						80,
+						77,
+						97,
+						136,
+						9,
+						88,
+						120,
+						110,
+						16,
+						128,
+						105,
+						98,
+						20,
+						40,
+						92,
+						126,
+						21,
+						112
+					]
+				},
+				{
+					"category_name": "regular",
+					"x_position": 0.000000,
+					"y_position": 705.118042,
+					"width": 508.919312,
+					"height": 87.329224,
+					"hero_ids":
+					[
+						10,
+						41,
+						109,
+						67,
+						114
+					]
+				},
+				{
+					"category_name": "niche",
+					"x_position": 637.391296,
+					"y_position": 723.478271,
+					"width": 460.794952,
+					"height": 154.459610,
+					"hero_ids":
+					[
+						46,
+						48,
+						138,
+						93,
+						12,
+						89,
+						63,
+						18,
+						72,
+						44,
+						70,
+						6,
+						1,
+						42,
+						4,
+						81,
+						114,
+						8,
+						15,
+						95,
+						73,
+						11
+					]
+				},
+				{
+					"category_name": "BAN",
+					"x_position": 310.360260,
+					"y_position": 575.105652,
+					"width": 409.639740,
+					"height": 104.894386,
+					"hero_ids":
+					[
+						104,
+						2,
+						135,
+						71,
+						42,
+						96,
+						28
+					]
+				},
+				{
+					"category_name": "supps",
+					"x_position": 0.000000,
+					"y_position": 824.447266,
+					"width": 456.521759,
+					"height": 93.813637,
+					"hero_ids":
+					[
+						37,
+						83,
+						53,
+						121,
+						71,
+						45
+					]
+				},
+				{
+					"category_name": " morph bad vs",
+					"x_position": 0.000000,
+					"y_position": 956.447266,
+					"width": 300.000000,
+					"height": 100.000000,
+					"hero_ids":
+					[
+						88,
+						2,
+						7,
+						82,
+						68,
+						25,
+						76,
+						1,
+						38,
+						109,
+						55,
+						86,
+						26,
+						90,
+						93,
+						34,
+						70
+					]
+				},
+				{
+					"category_name": "morph good vs",
+					"x_position": 0.000000,
+					"y_position": 1088.447266,
+					"width": 300.000000,
+					"height": 100.000000,
+					"hero_ids":
+					[
+						47,
+						35,
+						15,
+						56,
+						54,
+						8,
+						44,
+						110,
+						63,
+						53,
+						59,
+						104,
+						75,
+						40,
+						99,
+						4,
+						78,
+						83,
+						39,
+						71,
+						135
+					]
+				},
+				{
+					"category_name": "meta",
+					"x_position": 0.000000,
+					"y_position": 572.173950,
+					"width": 300.000000,
+					"height": 100.000000,
+					"hero_ids":
+					[
+						67,
+						48,
+						41,
+						63,
+						54
+					]
+				}
+			]
+		},
+		{
+			"config_name": "Custom Layout",
+			"categories":
+			[
+				{
+					"category_name": "Strength",
+					"x_position": 0.000000,
+					"y_position": 0.000000,
+					"width": 573.043518,
+					"height": 256.521759,
+					"hero_ids":
+					[
+						73,
+						2,
+						99,
+						96,
+						81,
+						135,
+						69,
+						49,
+						107,
+						7,
+						103,
+						59,
+						23,
+						104,
+						54,
+						129,
+						60,
+						84,
+						57,
+						137,
+						14,
+						28,
+						71,
+						18,
+						29,
+						98,
+						19,
+						83,
+						100,
+						108,
+						85,
+						42
+					]
+				},
+				{
+					"category_name": "Agility",
+					"x_position": 593.913086,
+					"y_position": 0.000000,
+					"width": 573.043518,
+					"height": 256.521759,
+					"hero_ids":
+					[
+						1,
+						113,
+						4,
+						62,
+						56,
+						6,
+						106,
+						41,
+						72,
+						123,
+						8,
+						48,
+						94,
+						82,
+						114,
+						10,
+						89,
+						44,
+						12,
+						15,
+						32,
+						11,
+						93,
+						35,
+						46,
+						109,
+						95,
+						70,
+						47,
+						63,
+						20
+					]
+				},
+				{
+					"category_name": "Intelligence",
+					"x_position": 0.000000,
+					"y_position": 284.347839,
+					"width": 573.043518,
+					"height": 256.521759,
+					"hero_ids":
+					[
+						68,
+						5,
+						43,
+						87,
+						58,
+						121,
+						64,
+						90,
+						52,
+						31,
+						25,
+						26,
+						138,
+						53,
+						36,
+						111,
+						76,
+						13,
+						45,
+						39,
+						131,
+						86,
+						79,
+						27,
+						75,
+						101,
+						17,
+						34,
+						37,
+						30,
+						22
+					]
+				},
+				{
+					"category_name": "Universal",
+					"x_position": 593.913086,
+					"y_position": 284.347839,
+					"width": 573.043518,
+					"height": 256.521759,
+					"hero_ids":
+					[
+						67,
+						102,
+						3,
+						65,
+						38,
+						78,
+						61,
+						66,
+						51,
+						55,
+						119,
+						50,
+						33,
+						74,
+						91,
+						80,
+						77,
+						97,
+						136,
+						9,
+						88,
+						120,
+						110,
+						16,
+						128,
+						105,
+						40,
+						92,
+						126,
+						21,
+						112
+					]
+				},
+				{
+					"category_name": "extended",
+					"x_position": 0.000000,
+					"y_position": 708.344055,
+					"width": 533.913025,
+					"height": 100.351616,
+					"hero_ids":
+					[
+						6,
+						94,
+						67,
+						73,
+						49,
+						44,
+						48,
+						4,
+						72,
+						41,
+						138,
+						109,
+						46,
+						114,
+						102,
+						136
+					]
+				},
+				{
+					"category_name": "no practice or not meta",
+					"x_position": 592.173950,
+					"y_position": 593.913086,
+					"width": 579.130432,
+					"height": 99.999947,
+					"hero_ids":
+					[
+						25,
+						93,
+						89,
+						135,
+						15,
+						97,
+						99,
+						63,
+						12,
+						42,
+						81,
+						61,
+						19,
+						145,
+						14,
+						126
+					]
+				},
+				{
+					"category_name": "pool",
+					"x_position": 0.000000,
+					"y_position": 577.391296,
+					"width": 386.086975,
+					"height": 101.739136,
+					"hero_ids":
+					[
+						10,
+						54,
+						70,
+						11,
+						18,
+						95,
+						1,
+						8,
+						53
+					]
+				},
+				{
+					"category_name": "suggest",
+					"x_position": 596.521729,
+					"y_position": 726.086975,
+					"width": 386.086975,
+					"height": 80.869568,
+					"hero_ids":
+					[
+						64,
+						37,
+						112,
+						31,
+						51,
+						84
+					]
+				},
+				{
+					"category_name": "token",
+					"x_position": 0.000000,
+					"y_position": 840.695679,
+					"width": 524.347839,
+					"height": 88.573586,
+					"hero_ids":
+					[
+						49,
+						26,
+						138,
+						60,
+						109,
+						96,
+						27
+					]
+				},
+				{
+					"category_name": "Новая категория",
+					"x_position": 0.000000,
+					"y_position": 961.269287,
+					"width": 300.000000,
+					"height": 100.000000,
+					"hero_ids":
+					[
+						14
+					]
+				},
+				{
+					"category_name": "New Category",
+					"x_position": 0.000000,
+					"y_position": 1093.269287,
+					"width": 300.000000,
+					"height": 100.000000,
+					"hero_ids":
+					[
+						128,
+						123,
+						27,
+						26,
+						138,
+						121,
+						136,
+						119
+					]
+				}
+			]
+		},
+		{
+			"config_name": "carry",
+			"categories":
+			[
+				{
+					"category_name": "Strength",
+					"x_position": 0.000000,
+					"y_position": 0.000000,
+					"width": 316.521759,
+					"height": 504.347839,
+					"hero_ids":
+					[
+						73,
+						2,
+						99,
+						96,
+						81,
+						51,
+						135,
+						69,
+						49,
+						107,
+						7,
+						103,
+						59,
+						23,
+						104,
+						54,
+						77,
+						129,
+						60,
+						84,
+						57,
+						110,
+						137,
+						14,
+						28,
+						71,
+						18,
+						29,
+						98,
+						19,
+						83,
+						100,
+						108,
+						85,
+						42,
+						155
+					]
+				},
+				{
+					"category_name": "Agility",
+					"x_position": 320.869568,
+					"y_position": 0.000000,
+					"width": 316.521759,
+					"height": 504.347839,
+					"hero_ids":
+					[
+						1,
+						4,
+						62,
+						61,
+						56,
+						6,
+						106,
+						41,
+						72,
+						123,
+						8,
+						145,
+						80,
+						48,
+						94,
+						82,
+						9,
+						114,
+						10,
+						89,
+						44,
+						12,
+						15,
+						32,
+						11,
+						93,
+						35,
+						46,
+						109,
+						95,
+						70,
+						20,
+						47,
+						63,
+						67
+					]
+				},
+				{
+					"category_name": "Intelligence",
+					"x_position": 641.739136,
+					"y_position": 0.000000,
+					"width": 316.521759,
+					"height": 504.347839,
+					"hero_ids":
+					[
+						68,
+						66,
+						5,
+						55,
+						119,
+						87,
+						58,
+						121,
+						74,
+						64,
+						90,
+						52,
+						31,
+						25,
+						26,
+						138,
+						36,
+						111,
+						76,
+						13,
+						45,
+						39,
+						131,
+						86,
+						79,
+						27,
+						75,
+						101,
+						17,
+						34,
+						37,
+						112,
+						30,
+						22
+					]
+				},
+				{
+					"category_name": "Universal",
+					"x_position": 962.608704,
+					"y_position": 0.000000,
+					"width": 213.913055,
+					"height": 504.347839,
+					"hero_ids":
+					[
+						102,
+						113,
+						3,
+						65,
+						38,
+						78,
+						50,
+						43,
+						33,
+						91,
+						97,
+						136,
+						53,
+						88,
+						120,
+						16,
+						128,
+						105,
+						40,
+						92,
+						126,
+						21
+					]
+				},
+				{
+					"category_name": "carry",
+					"x_position": 0.000000,
+					"y_position": 536.347839,
+					"width": 1185.217407,
+					"height": 249.739151,
+					"hero_ids":
+					[
+						54,
+						10,
+						6,
+						94,
+						70,
+						49,
+						73,
+						67,
+						72,
+						44,
+						4,
+						25,
+						1,
+						11,
+						18,
+						41,
+						8,
+						138,
+						53,
+						109,
+						102,
+						95,
+						42,
+						35,
+						46,
+						9,
+						114,
+						93,
+						21,
+						89,
+						63,
+						12,
+						61,
+						145
+					]
+				},
+				{
+					"category_name": "solo",
+					"x_position": 0.000000,
+					"y_position": 818.086975,
+					"width": 1074.782593,
+					"height": 164.545685,
+					"hero_ids":
+					[
+						10,
+						6,
+						1,
+						41,
+						109
+					]
+				},
+				{
+					"category_name": "7.40",
+					"x_position": 0.000000,
+					"y_position": 1014.632690,
+					"width": 1060.000000,
+					"height": 130.489075,
+					"hero_ids":
+					[
+						10,
+						6,
+						70,
+						49,
+						48,
+						4,
+						72,
+						102,
+						8,
+						42,
+						95,
+						21
+					]
+				}
+			]
+		}
+	]
+}

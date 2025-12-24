@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #0b1016;
+  --steel: #111925;
+  --panel: #141d28;
+  --panel-bright: #1b2633;
+  --ember: #e75b3a;
+  --gold: #f1b24a;
+  --mist: #aab6c4;
+  --faint: #233244;
+}
+
+@theme inline {
+  --color-background: var(--ink);
+  --color-foreground: #eef2f7;
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+}
+
+body {
+  background: radial-gradient(circle at top, rgba(231, 91, 58, 0.18), transparent 55%),
+    radial-gradient(circle at 70% 0%, rgba(241, 178, 74, 0.16), transparent 45%),
+    linear-gradient(160deg, #0b1016 0%, #0d141c 45%, #101a24 100%);
+  color: var(--color-foreground);
+  font-family: var(--font-body), system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+@keyframes gridFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes emberFloat {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
