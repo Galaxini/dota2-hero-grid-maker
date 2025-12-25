@@ -9,6 +9,7 @@ type Hero = {
   id: number;
   name: string;
   icon: string;
+  img: string;
   primaryAttr?: "str" | "agi" | "int" | "all";
 };
 
@@ -38,10 +39,11 @@ type GridConfig = {
   configs: Config[];
 };
 
-const HERO_SIZE = 44;
-const HERO_GAP = 6;
-const CARD_PADDING = 12;
-const TITLE_HEIGHT = 28;
+const DEFAULT_COLUMNS = 6;
+const SLOT_WIDTH = 316.521759 / 6;
+const SLOT_HEIGHT = 504.347839 / 6;
+const SLOT_INNER_SCALE = 0.9;
+const POOL_ICON_SIZE = 40;
 const BASE_CANVAS_WIDTH = 1182;
 
 const heroes = heroData as Hero[];
@@ -68,10 +70,10 @@ const stripUids = (configs: ConfigWithUid[]): Config[] =>
   }));
 
 const estimateCategorySize = (heroCount: number) => {
-  const columns = Math.max(5, Math.min(12, Math.ceil(heroCount / 2)));
-  const width = columns * (HERO_SIZE + HERO_GAP) + CARD_PADDING * 2;
+  const columns = DEFAULT_COLUMNS;
   const rows = Math.max(1, Math.ceil(heroCount / columns));
-  const height = rows * (HERO_SIZE + HERO_GAP) + CARD_PADDING * 2 + TITLE_HEIGHT;
+  const width = columns * SLOT_WIDTH;
+  const height = rows * SLOT_HEIGHT;
   return { width, height };
 };
 
@@ -125,6 +127,8 @@ export default function Home() {
   >("all");
   const [status, setStatus] = useState<string | null>(null);
   const [dragOverUid, setDragOverUid] = useState<string | null>(null);
+  const [pickerCategoryUid, setPickerCategoryUid] = useState<string | null>(null);
+  const [pickerQuery, setPickerQuery] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -287,7 +291,7 @@ export default function Home() {
           ...category,
           x_position: 0,
           y_position: cursorY,
-          width: Math.max(width, 360),
+          width: Math.max(width, DEFAULT_COLUMNS * SLOT_WIDTH),
           height,
         };
         cursorY += normalized.height + 22;
@@ -308,8 +312,8 @@ export default function Home() {
         category_name: "New Category",
         x_position: 0,
         y_position: maxY + 30,
-        width: 320,
-        height: 120,
+        width: DEFAULT_COLUMNS * SLOT_WIDTH,
+        height: SLOT_HEIGHT * 2,
         hero_ids: [],
       };
       return { ...config, categories: [...config.categories, newCategory] };
@@ -334,6 +338,27 @@ export default function Home() {
               ...category,
               hero_ids: category.hero_ids.filter((id) => id !== heroId),
             }
+          : category
+      ),
+    }));
+  };
+
+  const addHeroToCategory = (categoryUid: string, heroId: number) => {
+    updateActiveConfig((config) => ({
+      ...config,
+      categories: config.categories.map((category) =>
+        category.uid === categoryUid && !category.hero_ids.includes(heroId)
+          ? (() => {
+              const nextHeroIds = [...category.hero_ids, heroId];
+              const columns = Math.max(1, Math.round(category.width / SLOT_WIDTH));
+              const rowsNeeded = Math.max(1, Math.ceil(nextHeroIds.length / columns));
+              const minHeight = rowsNeeded * SLOT_HEIGHT;
+              return {
+                ...category,
+                hero_ids: nextHeroIds,
+                height: Math.max(category.height, minHeight),
+              };
+            })()
           : category
       ),
     }));
@@ -501,8 +526,8 @@ export default function Home() {
                     <Image
                       src={hero.icon}
                       alt={hero.name}
-                      width={HERO_SIZE}
-                      height={HERO_SIZE}
+                      width={POOL_ICON_SIZE}
+                      height={POOL_ICON_SIZE}
                       className="rounded-lg"
                     />
                     <span className="pointer-events-none absolute inset-x-1 bottom-1 rounded-md bg-black/70 px-1 text-[9px] text-white opacity-0 transition group-hover:opacity-100">
@@ -539,7 +564,15 @@ export default function Home() {
               {activeConfig.categories.map((category) => {
                 const columns = Math.max(
                   1,
-                  Math.floor((category.width - CARD_PADDING * 2) / (HERO_SIZE + HERO_GAP))
+                  Math.round(category.width / SLOT_WIDTH)
+                );
+                const slotWidthPx = SLOT_WIDTH * scale;
+                const slotHeightPx = SLOT_HEIGHT * scale;
+                const innerWidthPx = slotWidthPx * SLOT_INNER_SCALE;
+                const innerHeightPx = slotHeightPx * SLOT_INNER_SCALE;
+                const pickerOpen = pickerCategoryUid === category.uid;
+                const pickerResults = heroes.filter((hero) =>
+                  hero.name.toLowerCase().includes(pickerQuery.trim().toLowerCase())
                 );
                 return (
                   <div
@@ -552,7 +585,7 @@ export default function Home() {
                         current === category.uid ? null : current
                       )
                     }
-                    className={`absolute rounded-2xl border border-[color:var(--faint)] bg-[color:var(--panel-bright)]/80 p-3 transition ${
+                    className={`absolute rounded-2xl border border-[color:var(--faint)] bg-[color:var(--panel-bright)]/80 transition ${
                       dragOverUid === category.uid
                         ? "ring-2 ring-[color:var(--gold)]"
                         : ""
@@ -565,7 +598,7 @@ export default function Home() {
                       transformOrigin: "top left",
                     }}
                   >
-                    <div className="flex items-center justify-between gap-2">
+                    <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-2 bg-gradient-to-b from-black/70 to-transparent px-3 py-2 text-xs uppercase tracking-[0.2em] text-[color:var(--mist)]">
                       <input
                         value={category.category_name}
                         onChange={(event) => {
@@ -579,7 +612,7 @@ export default function Home() {
                             ),
                           }));
                         }}
-                        className="w-full bg-transparent text-xs uppercase tracking-[0.2em] text-[color:var(--mist)] outline-none"
+                        className="w-full bg-transparent outline-none"
                       />
                       <button
                         onClick={() =>
@@ -590,22 +623,27 @@ export default function Home() {
                             ),
                           }))
                         }
-                        className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--mist)] hover:text-white"
+                        className="text-[10px] uppercase tracking-[0.2em] hover:text-white"
                       >
                         Remove
                       </button>
                     </div>
                     <div
-                      className="mt-2 grid gap-2"
+                      className="grid"
                       style={{
-                        gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+                        gridTemplateColumns: `repeat(${columns}, ${slotWidthPx}px)`,
+                        gridAutoRows: `${slotHeightPx}px`,
                       }}
                     >
                       {category.hero_ids.map((heroId) => {
                         const hero = heroById.get(heroId);
                         if (!hero) return null;
                         return (
-                          <div key={`${category.uid}-${heroId}`} className="group relative">
+                          <div
+                            key={`${category.uid}-${heroId}`}
+                            className="group relative flex items-center justify-center"
+                            style={{ width: slotWidthPx, height: slotHeightPx }}
+                          >
                             <button
                               draggable
                               onDragStart={(event) => {
@@ -618,15 +656,16 @@ export default function Home() {
                                 );
                                 event.dataTransfer.effectAllowed = "copyMove";
                               }}
-                              className="rounded-lg border border-transparent transition hover:border-[color:var(--gold)]"
+                              className="relative flex items-center justify-center rounded-md border border-transparent transition hover:border-[color:var(--gold)]"
+                              style={{ width: innerWidthPx, height: innerHeightPx }}
                               title={hero.name}
                             >
                               <Image
-                                src={hero.icon}
+                                src={hero.img}
                                 alt={hero.name}
-                                width={HERO_SIZE}
-                                height={HERO_SIZE}
-                                className="rounded-md"
+                                fill
+                                sizes="100%"
+                                className="rounded-md object-cover"
                               />
                             </button>
                             <button
@@ -639,7 +678,61 @@ export default function Home() {
                           </div>
                         );
                       })}
+                      <button
+                        onClick={() => {
+                          setPickerCategoryUid(category.uid);
+                          setPickerQuery("");
+                        }}
+                        className="flex items-center justify-center rounded-md border border-dashed border-[color:var(--faint)] p-0 text-[20px] leading-none text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
+                        style={{ width: slotWidthPx, height: slotHeightPx }}
+                        aria-label="Add hero"
+                        type="button"
+                      >
+                        +
+                      </button>
                     </div>
+                    {pickerOpen ? (
+                      <div className="absolute inset-x-3 top-12 z-20 rounded-2xl border border-[color:var(--faint)] bg-[color:var(--panel)]/95 p-3 shadow-[0_15px_40px_rgba(0,0,0,0.45)]">
+                        <div className="flex items-center justify-between gap-2">
+                          <input
+                            value={pickerQuery}
+                            onChange={(event) => setPickerQuery(event.target.value)}
+                            placeholder="Search hero..."
+                            className="w-full rounded-xl border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-3 py-1 text-xs text-white outline-none transition focus:border-[color:var(--gold)]"
+                          />
+                          <button
+                            onClick={() => setPickerCategoryUid(null)}
+                            className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--mist)] hover:text-white"
+                          >
+                            Close
+                          </button>
+                        </div>
+                        <div className="mt-3 max-h-48 overflow-y-auto pr-1">
+                          <div className="grid grid-cols-6 gap-2">
+                            {pickerResults.map((hero) => (
+                              <button
+                                key={`${category.uid}-pick-${hero.id}`}
+                                onClick={() => addHeroToCategory(category.uid, hero.id)}
+                                className="group relative rounded-lg border border-transparent p-1 transition hover:border-[color:var(--gold)]"
+                                title={hero.name}
+                                type="button"
+                              >
+                                <Image
+                                  src={hero.icon}
+                                  alt={hero.name}
+                                  width={POOL_ICON_SIZE}
+                                  height={POOL_ICON_SIZE}
+                                  className="rounded-md"
+                                />
+                                <span className="pointer-events-none absolute inset-x-1 bottom-1 rounded-md bg-black/70 px-1 text-[9px] text-white opacity-0 transition group-hover:opacity-100">
+                                  {hero.name}
+                                </span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
                 );
               })}
