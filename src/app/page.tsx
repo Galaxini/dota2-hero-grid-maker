@@ -83,6 +83,28 @@ const estimateCategorySize = (heroCount: number) => {
 const normalizeQuery = (value: string) =>
   value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
+const seededRandom = (seed: string) => {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i += 1) {
+    hash = (hash << 5) - hash + seed.charCodeAt(i);
+    hash |= 0;
+  }
+  return () => {
+    hash = (hash * 1664525 + 1013904223) | 0;
+    return ((hash >>> 0) % 1000) / 1000;
+  };
+};
+
+const shuffleWithSeed = <T,>(items: T[], seed: string) => {
+  const rng = seededRandom(seed);
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(rng() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+};
+
 const computeLayout = (
   width: number,
   height: number,
@@ -180,10 +202,6 @@ export default function Home() {
     withCategoryUids(seedGrid.configs ?? [])
   );
   const [activeConfigIndex, setActiveConfigIndex] = useState(0);
-  const [query, setQuery] = useState("");
-  const [attrFilter, setAttrFilter] = useState<
-    "all" | "str" | "agi" | "int" | "uni"
-  >("all");
   const [status, setStatus] = useState<string | null>(null);
   const [dragOverUid, setDragOverUid] = useState<string | null>(null);
   const [pickerCategoryUid, setPickerCategoryUid] = useState<string | null>(null);
@@ -283,6 +301,27 @@ export default function Home() {
       })
       .filter((group) => group.heroes.length > 0);
   }, [pickerQuery, defaultGroups, heroById, aliasById]);
+
+  const metaRoles = useMemo(() => {
+    const roles = [
+      "Carry",
+      "Mid",
+      "Offlane",
+      "Soft Support",
+      "Hard Support",
+    ];
+    const shuffled = shuffleWithSeed(heroes, "meta-740b");
+    const groups: { name: string; heroes: Hero[] }[] = [];
+    let index = 0;
+    roles.forEach((role) => {
+      groups.push({
+        name: role,
+        heroes: shuffled.slice(index, index + 10),
+      });
+      index += 10;
+    });
+    return groups;
+  }, [heroes]);
   const pickerCategory = useMemo(
     () =>
       activeConfig?.categories.find(
@@ -290,19 +329,6 @@ export default function Home() {
       ) ?? null,
     [activeConfig, pickerCategoryUid]
   );
-
-  const filteredHeroes = useMemo(() => {
-    const normalizedQuery = normalizeQuery(query);
-    return heroes.filter((hero) => {
-      if (attrFilter !== "all") {
-        const targetAttr = attrFilter === "uni" ? "all" : attrFilter;
-        if (hero.primaryAttr !== targetAttr) {
-          return false;
-        }
-      }
-      return matchesHeroQuery(hero, normalizedQuery);
-    });
-  }, [query, attrFilter, aliasById]);
 
   const canvasBounds = useMemo(() => {
     if (!activeConfig) {
@@ -659,9 +685,9 @@ export default function Home() {
                 setPendingRemoveIndex(activeConfigIndex);
               }}
               disabled={configs.length <= 1}
-              className="rounded-full border border-[color:var(--faint)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-[color:var(--faint)] disabled:hover:text-[color:var(--mist)]"
+              className="rounded-full border border-red-500/60 px-4 py-2 uppercase tracking-[0.2em] text-red-200 transition hover:border-red-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-red-500/60 disabled:hover:text-red-200"
             >
-              Remove
+              Delete Layout
             </button>
             <label className="flex items-center gap-3">
               <span className="uppercase tracking-[0.2em]">Name</span>
@@ -677,27 +703,26 @@ export default function Home() {
                 className="rounded-full border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 text-white"
               />
             </label>
-            {editMode ? (
+            <div className="ml-auto flex items-end gap-3">
+              {editMode ? (
+                <button
+                  onClick={addCategory}
+                  className="h-[50px] w-[200px] rounded-full border border-dashed border-[color:var(--faint)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
+                >
+                  + Add Category
+                </button>
+              ) : null}
               <button
-                onClick={addCategory}
-                className="rounded-full border border-dashed border-[color:var(--faint)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
+                onClick={() => setEditMode((current) => !current)}
+                className={`h-[50px] w-[200px] rounded-full px-4 py-2 uppercase tracking-[0.2em] text-white shadow-[0_0_25px_rgba(0,0,0,0.25)] transition hover:-translate-y-0.5 ${
+                  editMode
+                    ? "bg-emerald-500/90"
+                    : "bg-[color:var(--ember)]"
+                }`}
               >
-                Add Category
+                {editMode ? "Save" : "Edit"}
               </button>
-            ) : null}
-            <span className="text-[10px] uppercase tracking-[0.2em]">
-              Version {gridVersion}
-            </span>
-            <button
-              onClick={() => setEditMode((current) => !current)}
-              className={`ml-auto h-[50px] w-[200px] self-end rounded-full px-4 py-2 uppercase tracking-[0.2em] text-white shadow-[0_0_25px_rgba(0,0,0,0.25)] transition hover:-translate-y-0.5 ${
-                editMode
-                  ? "bg-emerald-500/90"
-                  : "bg-[color:var(--ember)]"
-              }`}
-            >
-              {editMode ? "Save" : "Edit"}
-            </button>
+            </div>
           </div>
           {status ? (
             <div className="rounded-2xl border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 text-xs text-[color:var(--mist)]">
@@ -714,90 +739,52 @@ export default function Home() {
         </header>
 
         <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
-          <aside
-            className={`space-y-4 rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)]/85 p-5 backdrop-blur ${
-              editMode ? "" : "pointer-events-none opacity-60"
-            }`}
-          >
-            <div className="space-y-2">
+          <aside className="space-y-4 rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)]/85 p-5 backdrop-blur">
+            <div className="space-y-1">
               <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--mist)]">
-                Hero Pool
+                Current Meta 7.40b
               </p>
-              <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search hero..."
-                className="w-full rounded-2xl border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 text-sm text-white outline-none transition focus:border-[color:var(--gold)]"
-              />
+              <p className="text-[11px] text-[color:var(--mist)]">
+                10 random heroes per role (temporary list)
+              </p>
             </div>
-            <div className="flex flex-wrap gap-2 text-xs uppercase tracking-[0.2em] text-[color:var(--mist)]">
-              {[
-                { label: "All", value: "all" },
-                { label: "Str", value: "str" },
-                { label: "Agi", value: "agi" },
-                { label: "Int", value: "int" },
-                { label: "Uni", value: "uni" },
-              ].map((item) => (
-                <button
-                  key={item.label}
-                  onClick={() =>
-                    setAttrFilter(
-                      item.value as "all" | "str" | "agi" | "int" | "uni"
-                    )
-                  }
-                  className={`rounded-full px-3 py-1 transition ${
-                    attrFilter === item.value
-                      ? "bg-[color:var(--gold)] text-black"
-                      : "border border-[color:var(--faint)] text-[color:var(--mist)] hover:border-[color:var(--gold)] hover:text-white"
-                  }`}
-                >
-                  {item.label}
-                </button>
+            <div className="space-y-5">
+              {metaRoles.map((role) => (
+                <div key={role.name} className="space-y-2">
+                  <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-[color:var(--mist)]">
+                    <span>{role.name}</span>
+                    <span className="h-px flex-1 bg-[color:var(--faint)]" />
+                  </div>
+                  <div className="grid grid-cols-5 gap-2">
+                    {role.heroes.map((hero) => (
+                      <div
+                        key={`meta-${role.name}-${hero.id}`}
+                        className="group relative rounded-xl border border-[color:var(--faint)] bg-black/30 p-1"
+                        title={hero.name}
+                      >
+                        <Image
+                          src={hero.icon}
+                          alt={hero.name}
+                          width={POOL_ICON_SIZE}
+                          height={POOL_ICON_SIZE}
+                          className="rounded-lg"
+                        />
+                        <span className="pointer-events-none absolute inset-x-1 bottom-1 rounded-md bg-black/70 px-1 text-[9px] text-white opacity-0 transition group-hover:opacity-100">
+                          {hero.name}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               ))}
-            </div>
-            <div className="h-[60vh] overflow-y-auto pr-1">
-              <div className="grid grid-cols-4 gap-2">
-                {filteredHeroes.map((hero) => (
-                  <button
-                    key={hero.id}
-                    draggable
-                    onDragStart={(event) => {
-                      event.dataTransfer.setData(
-                        "application/json",
-                        JSON.stringify({ heroId: hero.id })
-                      );
-                      event.dataTransfer.effectAllowed = "copy";
-                    }}
-                    className="group relative rounded-xl border border-[color:var(--faint)] bg-black/30 p-1 transition hover:border-[color:var(--gold)]"
-                    title={hero.name}
-                  >
-                    <Image
-                      src={hero.icon}
-                      alt={hero.name}
-                      width={POOL_ICON_SIZE}
-                      height={POOL_ICON_SIZE}
-                      className="rounded-lg"
-                    />
-                    <span className="pointer-events-none absolute inset-x-1 bottom-1 rounded-md bg-black/70 px-1 text-[9px] text-white opacity-0 transition group-hover:opacity-100">
-                      {hero.name}
-                    </span>
-                  </button>
-                ))}
-              </div>
             </div>
           </aside>
 
-          <section className="w-full space-y-4">
-            <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-[color:var(--mist)]">
-              <span>Canvas</span>
-              <span>
-                Categories {activeConfig.categories.length} · Heroes{" "}
-                {activeConfig.categories.reduce((sum, category) => sum + category.hero_ids.length, 0)}
-              </span>
-            </div>
+          <section className="w-full min-w-0 space-y-4">
+            <div className="h-0" />
             <div
               ref={canvasRef}
-              className="relative min-h-[60vh] overflow-hidden rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)]/70 shadow-[inset_0_0_40px_rgba(0,0,0,0.45)]"
+              className="relative w-full min-h-[60vh] overflow-visible rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)]/70 shadow-[inset_0_0_40px_rgba(0,0,0,0.45)]"
               style={{
                 height: canvasBounds.height * safeScale + 40,
               }}
@@ -863,41 +850,30 @@ export default function Home() {
                       transformOrigin: "top left",
                     }}
                   >
-                    <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-2 bg-gradient-to-b from-black/70 to-transparent px-3 py-2 text-xs uppercase tracking-[0.2em] text-[color:var(--mist)]">
-                      <input
-                        data-no-drag
-                        value={category.category_name}
-                        onChange={(event) => {
-                          const value = event.target.value;
-                          updateActiveConfig((config) => ({
-                            ...config,
-                            categories: config.categories.map((cat) =>
-                              cat.uid === category.uid
-                                ? { ...cat, category_name: value }
-                                : cat
-                            ),
-                          }));
-                        }}
-                        disabled={!editMode}
-                        className="w-full bg-transparent outline-none"
-                      />
-                      {editMode ? (
-                        <button
-                        data-no-drag
-                        onClick={() =>
-                          updateActiveConfig((config) => ({
-                            ...config,
-                            categories: config.categories.filter(
-                              (cat) => cat.uid !== category.uid
-                            ),
-                          }))
-                        }
-                        className="text-[10px] uppercase tracking-[0.2em] hover:text-white"
-                      >
-                        Remove
-                      </button>
-                      ) : null}
+                    <div className="absolute -top-6 left-0 z-20 flex items-center gap-2 text-[10px] uppercase tracking-[0.35em] text-[color:var(--mist)]">
+                      <span>✦</span>
+                      <span>{category.category_name}</span>
+                      <span>✦</span>
+                      <span className="ml-1 text-[12px]">⚙</span>
                     </div>
+                    {editMode ? (
+                      <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-end gap-2 bg-gradient-to-b from-black/70 to-transparent px-3 py-2 text-xs uppercase tracking-[0.2em] text-[color:var(--mist)]">
+                        <button
+                          data-no-drag
+                          onClick={() =>
+                            updateActiveConfig((config) => ({
+                              ...config,
+                              categories: config.categories.filter(
+                                (cat) => cat.uid !== category.uid
+                              ),
+                            }))
+                          }
+                          className="text-[10px] uppercase tracking-[0.2em] hover:text-white"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ) : null}
                     <div
                       className="grid"
                       style={{
