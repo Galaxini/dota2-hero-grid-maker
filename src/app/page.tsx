@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useMemo, useRef, useState, useEffect } from "react";
 import heroData from "@/data/dota2_heroes.json";
+import heroAliases from "@/data/hero_aliases.json";
 import defaultGrid from "@/data/hero_grid_config.json";
 
 type Hero = {
@@ -40,13 +41,15 @@ type GridConfig = {
 };
 
 const DEFAULT_COLUMNS = 6;
-const HERO_WIDTH = 42.009;
-const HERO_HEIGHT = 74.009;
-const HERO_GAP = 12.0608;
+const HERO_WIDTH = 42.78465715;
+const HERO_HEIGHT = 74.09050379;
+const HERO_GAP = 8.376072285;
+const GRID_PADDING = HERO_GAP;
 const POOL_ICON_SIZE = 40;
-const BASE_CANVAS_WIDTH = 1176.521759;
+const BASE_CANVAS_WIDTH = 1182;
 
 const heroes = heroData as Hero[];
+const aliases = heroAliases as Record<string, string[]>;
 const seedGrid = defaultGrid as GridConfig;
 
 const makeUid = () =>
@@ -77,13 +80,16 @@ const estimateCategorySize = (heroCount: number) => {
   return { width, height };
 };
 
+const normalizeQuery = (value: string) =>
+  value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
 const computeLayout = (
   width: number,
   height: number,
   itemCount: number
 ) => {
-  const safeWidth = Math.max(width, HERO_WIDTH);
-  const safeHeight = Math.max(height, HERO_HEIGHT);
+  const safeWidth = Math.max(width - GRID_PADDING * 2, HERO_WIDTH);
+  const safeHeight = Math.max(height - GRID_PADDING * 2, HERO_HEIGHT);
   const totalItems = Math.max(1, itemCount);
   let best = { columns: 1, rows: totalItems, scale: 0 };
 
@@ -125,26 +131,46 @@ const buildDefaultConfig = (heroesList: Hero[]): ConfigWithUid => {
     }
   });
 
-  const categories: CategoryWithUid[] = [
-    { category_name: "Strength", hero_ids: byAttr.str, x_position: 0, y_position: 0, width: 0, height: 0, uid: makeUid() },
-    { category_name: "Agility", hero_ids: byAttr.agi, x_position: 0, y_position: 0, width: 0, height: 0, uid: makeUid() },
-    { category_name: "Intelligence", hero_ids: byAttr.int, x_position: 0, y_position: 0, width: 0, height: 0, uid: makeUid() },
-    { category_name: "Universal", hero_ids: byAttr.all, x_position: 0, y_position: 0, width: 0, height: 0, uid: makeUid() },
-  ];
-
-  let currentY = 0;
-  categories.forEach((category) => {
-    const { width, height } = estimateCategorySize(category.hero_ids.length);
-    category.width = width;
-    category.height = height;
-    category.x_position = 0;
-    category.y_position = currentY;
-    currentY += height + 20;
-  });
-
   return {
     config_name: "Default Attributes",
-    categories,
+    categories: [
+      {
+        uid: makeUid(),
+        category_name: "Strength",
+        x_position: 0,
+        y_position: 0,
+        width: 316.521759,
+        height: 504.347839,
+        hero_ids: byAttr.str,
+      },
+      {
+        uid: makeUid(),
+        category_name: "Agility",
+        x_position: 320.869568,
+        y_position: 0,
+        width: 316.521759,
+        height: 504.347839,
+        hero_ids: byAttr.agi,
+      },
+      {
+        uid: makeUid(),
+        category_name: "Intelligence",
+        x_position: 641.739136,
+        y_position: 0,
+        width: 316.521759,
+        height: 504.347839,
+        hero_ids: byAttr.int,
+      },
+      {
+        uid: makeUid(),
+        category_name: "Universal",
+        x_position: 962.608704,
+        y_position: 0,
+        width: 213.913055,
+        height: 504.347839,
+        hero_ids: byAttr.all,
+      },
+    ],
   };
 };
 
@@ -162,6 +188,10 @@ export default function Home() {
   const [dragOverUid, setDragOverUid] = useState<string | null>(null);
   const [pickerCategoryUid, setPickerCategoryUid] = useState<string | null>(null);
   const [pickerQuery, setPickerQuery] = useState("");
+  const [editMode, setEditMode] = useState(true);
+  const [pendingRemoveIndex, setPendingRemoveIndex] = useState<number | null>(
+    null
+  );
   const [resizeState, setResizeState] = useState<{
     uid: string;
     startX: number;
@@ -202,10 +232,67 @@ export default function Home() {
     return map;
   }, []);
 
+  const aliasById = useMemo(() => {
+    const map = new Map<number, string[]>();
+    heroes.forEach((hero) => {
+      const list = aliases[hero.name] ?? [];
+      map.set(hero.id, list.map(normalizeQuery).filter(Boolean));
+    });
+    return map;
+  }, []);
+
+  const matchesHeroQuery = (hero: Hero, normalized: string) => {
+    if (!normalized) return true;
+    if (normalizeQuery(hero.name).includes(normalized)) {
+      return true;
+    }
+    const list = aliasById.get(hero.id) ?? [];
+    return list.some((alias) => alias.includes(normalized));
+  };
+
+  const defaultGroups = useMemo(() => {
+    const defaultConfig =
+      seedGrid.configs?.find((config) => config.config_name === "default") ??
+      seedGrid.configs?.find(
+        (config) => config.config_name === "Default Attributes"
+      );
+    if (!defaultConfig) {
+      return [
+        { name: "Strength", heroIds: [] as number[] },
+        { name: "Agility", heroIds: [] as number[] },
+        { name: "Intelligence", heroIds: [] as number[] },
+        { name: "Universal", heroIds: [] as number[] },
+      ];
+    }
+    return defaultConfig.categories.map((category) => ({
+      name: category.category_name,
+      heroIds: category.hero_ids,
+    }));
+  }, []);
+
   const activeConfig = configs[activeConfigIndex];
+  const pickerGroups = useMemo(() => {
+    const normalized = normalizeQuery(pickerQuery);
+    return defaultGroups
+      .map((group) => {
+        const heroesList = group.heroIds
+          .map((heroId) => heroById.get(heroId))
+          .filter((hero): hero is Hero => Boolean(hero))
+          .filter((hero) => matchesHeroQuery(hero, normalized));
+        return { name: group.name, heroes: heroesList };
+      })
+      .filter((group) => group.heroes.length > 0);
+  }, [pickerQuery, defaultGroups, heroById, aliasById]);
+  const pickerCategory = useMemo(
+    () =>
+      activeConfig?.categories.find(
+        (category) => category.uid === pickerCategoryUid
+      ) ?? null,
+    [activeConfig, pickerCategoryUid]
+  );
 
   const filteredHeroes = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
+    const normalizedQuery = normalizeQuery(query);
     return heroes.filter((hero) => {
       if (attrFilter !== "all") {
         const targetAttr = attrFilter === "uni" ? "all" : attrFilter;
@@ -213,10 +300,9 @@ export default function Home() {
           return false;
         }
       }
-      if (!normalizedQuery) return true;
-      return hero.name.toLowerCase().includes(normalizedQuery);
+      return matchesHeroQuery(hero, normalizedQuery);
     });
-  }, [query, attrFilter]);
+  }, [query, attrFilter, aliasById]);
 
   const canvasBounds = useMemo(() => {
     if (!activeConfig) {
@@ -234,7 +320,7 @@ export default function Home() {
   }, [activeConfig]);
 
   const scale = canvasWidth
-    ? Math.min(1, canvasWidth / canvasBounds.width)
+    ? Math.min(2, canvasWidth / canvasBounds.width)
     : 1;
   const safeScale = Number.isFinite(scale) && scale > 0 ? scale : 1;
 
@@ -440,8 +526,8 @@ export default function Home() {
         category_name: "New Category",
         x_position: 0,
         y_position: maxY + 30,
-        width: DEFAULT_COLUMNS * HERO_WIDTH + (DEFAULT_COLUMNS - 1) * HERO_GAP,
-        height: HERO_HEIGHT * 2 + HERO_GAP,
+        width: 5 * HERO_WIDTH + 4 * HERO_GAP,
+        height: HERO_HEIGHT + 2 * HERO_GAP,
         hero_ids: [],
       };
       return { ...config, categories: [...config.categories, newCategory] };
@@ -449,8 +535,17 @@ export default function Home() {
   };
 
   const createConfig = () => {
-    const fresh = buildDefaultConfig(heroes);
     setConfigs((prev) => {
+      const baseName = "Custom Layout";
+      let name = baseName;
+      let suffix = 1;
+      const existing = new Set(prev.map((config) => config.config_name));
+      while (existing.has(name)) {
+        name = `${baseName} (${suffix})`;
+        suffix += 1;
+      }
+      const fresh = buildDefaultConfig(heroes);
+      fresh.config_name = name;
       const next = [...prev, fresh];
       setActiveConfigIndex(next.length - 1);
       return next;
@@ -507,7 +602,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen px-4 py-10 sm:px-6">
-      <div className="mx-auto flex max-w-7xl flex-col gap-8">
+      <div className="mx-auto flex w-[75%] max-w-none flex-col gap-8">
         <header className="grid gap-6 rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)]/80 p-6 shadow-[0_25px_80px_rgba(0,0,0,0.35)] backdrop-blur">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="space-y-2">
@@ -541,12 +636,6 @@ export default function Home() {
               >
                 New Config
               </button>
-              <button
-                onClick={normalizeLayout}
-                className="rounded-full border border-[color:var(--faint)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
-              >
-                Normalize
-              </button>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-4 text-xs text-[color:var(--mist)]">
@@ -564,6 +653,16 @@ export default function Home() {
                 ))}
               </select>
             </label>
+            <button
+              onClick={() => {
+                if (configs.length <= 1) return;
+                setPendingRemoveIndex(activeConfigIndex);
+              }}
+              disabled={configs.length <= 1}
+              className="rounded-full border border-[color:var(--faint)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-[color:var(--faint)] disabled:hover:text-[color:var(--mist)]"
+            >
+              Remove
+            </button>
             <label className="flex items-center gap-3">
               <span className="uppercase tracking-[0.2em]">Name</span>
               <input
@@ -578,15 +677,27 @@ export default function Home() {
                 className="rounded-full border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 text-white"
               />
             </label>
-            <button
-              onClick={addCategory}
-              className="rounded-full border border-dashed border-[color:var(--faint)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
-            >
-              Add Category
-            </button>
+            {editMode ? (
+              <button
+                onClick={addCategory}
+                className="rounded-full border border-dashed border-[color:var(--faint)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
+              >
+                Add Category
+              </button>
+            ) : null}
             <span className="text-[10px] uppercase tracking-[0.2em]">
               Version {gridVersion}
             </span>
+            <button
+              onClick={() => setEditMode((current) => !current)}
+              className={`ml-auto h-[50px] w-[200px] self-end rounded-full px-4 py-2 uppercase tracking-[0.2em] text-white shadow-[0_0_25px_rgba(0,0,0,0.25)] transition hover:-translate-y-0.5 ${
+                editMode
+                  ? "bg-emerald-500/90"
+                  : "bg-[color:var(--ember)]"
+              }`}
+            >
+              {editMode ? "Save" : "Edit"}
+            </button>
           </div>
           {status ? (
             <div className="rounded-2xl border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 text-xs text-[color:var(--mist)]">
@@ -603,7 +714,11 @@ export default function Home() {
         </header>
 
         <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
-          <aside className="space-y-4 rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)]/85 p-5 backdrop-blur">
+          <aside
+            className={`space-y-4 rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)]/85 p-5 backdrop-blur ${
+              editMode ? "" : "pointer-events-none opacity-60"
+            }`}
+          >
             <div className="space-y-2">
               <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--mist)]">
                 Hero Pool
@@ -672,7 +787,7 @@ export default function Home() {
             </div>
           </aside>
 
-          <section className="space-y-4">
+          <section className="w-full space-y-4">
             <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-[color:var(--mist)]">
               <span>Canvas</span>
               <span>
@@ -682,8 +797,10 @@ export default function Home() {
             </div>
             <div
               ref={canvasRef}
-              className="relative min-h-[60vh] overflow-hidden rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)]/70 p-4 shadow-[inset_0_0_40px_rgba(0,0,0,0.45)]"
-              style={{ height: canvasBounds.height * scale + 40 }}
+              className="relative min-h-[60vh] overflow-hidden rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)]/70 shadow-[inset_0_0_40px_rgba(0,0,0,0.45)]"
+              style={{
+                height: canvasBounds.height * safeScale + 40,
+              }}
             >
               <div
                 className="absolute inset-0 opacity-20"
@@ -698,27 +815,35 @@ export default function Home() {
                 const layout = computeLayout(
                   category.width,
                   category.height,
-                  category.hero_ids.length + 1
+                  category.hero_ids.length + (editMode ? 1 : 0)
                 );
                 const heroWidthPx = HERO_WIDTH * layout.scale * scale;
                 const heroHeightPx = HERO_HEIGHT * layout.scale * scale;
                 const gapPx = HERO_GAP * layout.scale * scale;
                 const pickerOpen = pickerCategoryUid === category.uid;
-                const pickerResults = heroes.filter((hero) =>
-                  hero.name.toLowerCase().includes(pickerQuery.trim().toLowerCase())
-                );
                 return (
                   <div
                     key={category.uid}
-                    onDragOver={(event) => event.preventDefault()}
-                    onDrop={(event) => handleDrop(event, category.uid)}
-                    onDragEnter={() => setDragOverUid(category.uid)}
-                    onDragLeave={() =>
+                    onDragOver={(event) => {
+                      if (!editMode) return;
+                      event.preventDefault();
+                    }}
+                    onDrop={(event) => {
+                      if (!editMode) return;
+                      handleDrop(event, category.uid);
+                    }}
+                    onDragEnter={() => {
+                      if (!editMode) return;
+                      setDragOverUid(category.uid);
+                    }}
+                    onDragLeave={() => {
+                      if (!editMode) return;
                       setDragOverUid((current) =>
                         current === category.uid ? null : current
-                      )
-                    }
+                      );
+                    }}
                     onMouseDown={(event) => {
+                      if (!editMode) return;
                       const target = event.target as HTMLElement;
                       if (target.closest("[data-no-drag]")) {
                         return;
@@ -753,9 +878,11 @@ export default function Home() {
                             ),
                           }));
                         }}
+                        disabled={!editMode}
                         className="w-full bg-transparent outline-none"
                       />
-                      <button
+                      {editMode ? (
+                        <button
                         data-no-drag
                         onClick={() =>
                           updateActiveConfig((config) => ({
@@ -769,6 +896,7 @@ export default function Home() {
                       >
                         Remove
                       </button>
+                      ) : null}
                     </div>
                     <div
                       className="grid"
@@ -777,6 +905,10 @@ export default function Home() {
                         gridAutoRows: `${heroHeightPx}px`,
                         columnGap: `${gapPx}px`,
                         rowGap: `${gapPx}px`,
+                        paddingLeft: `${gapPx}px`,
+                        paddingRight: `${gapPx}px`,
+                        paddingTop: `${gapPx}px`,
+                        paddingBottom: `${gapPx}px`,
                       }}
                     >
                       {category.hero_ids.map((heroId) => {
@@ -789,8 +921,10 @@ export default function Home() {
                             style={{ width: heroWidthPx, height: heroHeightPx }}
                           >
                             <button
+                              data-no-drag={!editMode}
                               draggable
                               onDragStart={(event) => {
+                                if (!editMode) return;
                                 event.dataTransfer.setData(
                                   "application/json",
                                   JSON.stringify({
@@ -812,31 +946,37 @@ export default function Home() {
                                 className="h-full w-full rounded-md object-cover"
                               />
                             </button>
-                            <button
-                              onClick={() => removeHeroFromCategory(category.uid, heroId)}
-                              className="absolute -right-1 -top-1 hidden h-5 w-5 items-center justify-center rounded-full bg-black/70 text-[10px] text-white group-hover:flex"
-                              aria-label={`Remove ${hero.name}`}
-                            >
-                              ×
-                            </button>
+                            {editMode ? (
+                              <button
+                                data-no-drag
+                                onClick={() => removeHeroFromCategory(category.uid, heroId)}
+                                className="absolute -right-1 -top-1 hidden h-5 w-5 items-center justify-center rounded-full bg-black/70 text-[10px] text-white group-hover:flex"
+                                aria-label={`Remove ${hero.name}`}
+                              >
+                                ×
+                              </button>
+                            ) : null}
                           </div>
                         );
                       })}
-                      <button
-                        data-no-drag
-                        onClick={() => {
-                          setPickerCategoryUid(category.uid);
-                          setPickerQuery("");
-                        }}
-                        className="flex items-center justify-center rounded-md border border-dashed border-[color:var(--faint)] p-0 text-[20px] leading-none text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
-                        style={{ width: heroWidthPx, height: heroHeightPx }}
-                        aria-label="Add hero"
-                        type="button"
-                      >
-                        +
-                      </button>
+                      {editMode ? (
+                        <button
+                          data-no-drag
+                          onClick={() => {
+                            setPickerCategoryUid(category.uid);
+                            setPickerQuery("");
+                          }}
+                          className="flex items-center justify-center rounded-md border border-dashed border-[color:var(--faint)] p-0 text-[20px] leading-none text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
+                          style={{ width: heroWidthPx, height: heroHeightPx }}
+                          aria-label="Add hero"
+                          type="button"
+                        >
+                          +
+                        </button>
+                      ) : null}
                     </div>
-                    <button
+                    {editMode ? (
+                      <button
                       data-no-drag
                       onMouseDown={(event) => {
                         event.preventDefault();
@@ -855,49 +995,6 @@ export default function Home() {
                     >
                       ↘
                     </button>
-                    {pickerOpen ? (
-                      <div className="absolute inset-x-3 top-12 z-20 rounded-2xl border border-[color:var(--faint)] bg-[color:var(--panel)]/95 p-3 shadow-[0_15px_40px_rgba(0,0,0,0.45)]">
-                        <div className="flex items-center justify-between gap-2">
-                          <input
-                            data-no-drag
-                            value={pickerQuery}
-                            onChange={(event) => setPickerQuery(event.target.value)}
-                            placeholder="Search hero..."
-                            className="w-full rounded-xl border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-3 py-1 text-xs text-white outline-none transition focus:border-[color:var(--gold)]"
-                          />
-                          <button
-                            data-no-drag
-                            onClick={() => setPickerCategoryUid(null)}
-                            className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--mist)] hover:text-white"
-                          >
-                            Close
-                          </button>
-                        </div>
-                        <div className="mt-3 max-h-48 overflow-y-auto pr-1">
-                          <div className="grid grid-cols-6 gap-2">
-                            {pickerResults.map((hero) => (
-                              <button
-                                key={`${category.uid}-pick-${hero.id}`}
-                                onClick={() => addHeroToCategory(category.uid, hero.id)}
-                                className="group relative rounded-lg border border-transparent p-1 transition hover:border-[color:var(--gold)]"
-                                title={hero.name}
-                                type="button"
-                              >
-                                <Image
-                                  src={hero.icon}
-                                  alt={hero.name}
-                                  width={POOL_ICON_SIZE}
-                                  height={POOL_ICON_SIZE}
-                                  className="rounded-md"
-                                />
-                                <span className="pointer-events-none absolute inset-x-1 bottom-1 rounded-md bg-black/70 px-1 text-[9px] text-white opacity-0 transition group-hover:opacity-100">
-                                  {hero.name}
-                                </span>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
                     ) : null}
                   </div>
                 );
@@ -906,6 +1003,104 @@ export default function Home() {
           </section>
         </div>
       </div>
+      {pendingRemoveIndex !== null ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+          <div className="w-full max-w-md rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
+            <h2 className="text-lg font-semibold text-white">Remove config?</h2>
+            <p className="mt-2 text-sm text-[color:var(--mist)]">
+              Конфиг будет удалён без возможности восстановления.
+            </p>
+            <div className="mt-6 flex items-center justify-end gap-3 text-xs uppercase tracking-[0.2em]">
+              <button
+                onClick={() => setPendingRemoveIndex(null)}
+                className="rounded-full border border-[color:var(--faint)] px-4 py-2 text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  if (pendingRemoveIndex === null) return;
+                  setConfigs((prev) =>
+                    prev.filter((_, index) => index !== pendingRemoveIndex)
+                  );
+                  setActiveConfigIndex((prev) =>
+                    prev === pendingRemoveIndex ? 0 : Math.max(0, prev - 1)
+                  );
+                  setPendingRemoveIndex(null);
+                }}
+                className="rounded-full bg-[color:var(--ember)] px-4 py-2 text-white shadow-[0_0_25px_rgba(231,91,58,0.45)]"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {pickerCategoryUid && editMode ? (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/70 px-4">
+          <div className="w-full max-w-5xl rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.7)]">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--mist)]">
+                  Choose a hero
+                </p>
+                <p className="text-sm text-white">
+                  {pickerCategory?.category_name || "Category"}
+                </p>
+              </div>
+              <input
+                value={pickerQuery}
+                onChange={(event) => setPickerQuery(event.target.value)}
+                placeholder="Search hero..."
+                className="w-full max-w-xs rounded-xl border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-3 py-2 text-xs text-white outline-none transition focus:border-[color:var(--gold)]"
+              />
+            </div>
+            <div className="mt-4 max-h-[60vh] space-y-6 overflow-y-auto pr-1">
+              {pickerGroups.map((group) => (
+                <div key={group.name} className="space-y-2">
+                  <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-[color:var(--mist)]">
+                    <span>{group.name}</span>
+                    <span className="h-px flex-1 bg-[color:var(--faint)]" />
+                  </div>
+                  <div className="grid grid-cols-8 gap-2">
+                    {group.heroes.map((hero) => (
+                      <button
+                        key={`picker-${group.name}-${hero.id}`}
+                      onClick={() => {
+                        addHeroToCategory(pickerCategoryUid, hero.id);
+                        setPickerCategoryUid(null);
+                      }}
+                        className="group relative rounded-lg border border-transparent p-1 transition hover:border-[color:var(--gold)]"
+                        title={hero.name}
+                        type="button"
+                      >
+                        <Image
+                          src={hero.icon}
+                          alt={hero.name}
+                          width={POOL_ICON_SIZE}
+                          height={POOL_ICON_SIZE}
+                          className="rounded-md"
+                        />
+                        <span className="pointer-events-none absolute inset-x-1 bottom-1 rounded-md bg-black/70 px-1 text-[9px] text-white opacity-0 transition group-hover:opacity-100">
+                          {hero.name}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={() => setPickerCategoryUid(null)}
+                className="rounded-full border border-[color:var(--faint)] px-4 py-2 text-xs uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

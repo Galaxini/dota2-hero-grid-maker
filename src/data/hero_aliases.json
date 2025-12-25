@@ -1,0 +1,467 @@
+{
+  "Abaddon": [
+    "Abbadon",
+    "Abbadon the Lord of Avernus",
+    "Lord of Avernus"
+  ],
+  "Underlord": [
+    "Abyssal Underlord",
+    "Azgalor the Abyssal Underlord"
+  ],
+  "Alchemist": [
+    "Razzil Darkbrew the Alchemist"
+  ],
+  "Ancient Apparition": [
+    "Kaldr the Ancient Apparition"
+  ],
+  "Anti-Mage": [
+    "Magina the Anti-Mage",
+    "Magina"
+  ],
+  "Arc Warden": [
+    "Zet the Arc Warden",
+    "Zet"
+  ],
+  "Axe": [
+    "Mohgul Khan the Axe"
+  ],
+  "Bane": [
+    "Atropos the Bane Elemental",
+    "Atropos"
+  ],
+  "Batrider": [
+    "Jin'zakk the Batrider",
+    "Jin zakk"
+  ],
+  "Beastmaster": [
+    "Karroch the Beastmaster"
+  ],
+  "Bloodseeker": [
+    "Strygwyr the Bloodseeker",
+    "Strygwyr"
+  ],
+  "Bounty Hunter": [
+    "Gondar the Bounty Hunter",
+    "Gondar"
+  ],
+  "Brewmaster": [
+    "Mangix the Brewmaster",
+    "Mangix"
+  ],
+  "Bristleback": [
+    "Rigwarl the Bristleback",
+    "Rigwarl"
+  ],
+  "Broodmother": [
+    "Black Arachnia the Broodmother",
+    "Black Arachnia"
+  ],
+  "Centaur Warrunner": [
+    "Bradwarden the Centaur Warrunner",
+    "Bradwarden"
+  ],
+  "Chaos Knight": [
+    "Nessaj the Chaos Knight",
+    "Nessaj"
+  ],
+  "Chen": [
+    "Chen the Holy Knight",
+    "Holy Knight"
+  ],
+  "Clinkz": [
+    "Clinkz the Bone Fletcher",
+    "Bone Fletcher"
+  ],
+  "Clockwerk": [
+    "Rattletrap the Clockwerk",
+    "Rattletrap"
+  ],
+  "Crystal Maiden": [
+    "Rylai the Crystal Maiden",
+    "Rylai"
+  ],
+  "Dark Seer": [
+    "Ish'kafel the Dark Seer",
+    "Ish kafel"
+  ],
+  "Dazzle": [
+    "Dazzle the Shadow Priest",
+    "Shadow Priest"
+  ],
+  "Death Prophet": [
+    "Krobelus the Death Prophet",
+    "Krobelus"
+  ],
+  "Disruptor": [
+    "Disrupter",
+    "Disrupter the Stormcrafter",
+    "Stormcrafter"
+  ],
+  "Doom": [
+    "Lucifer the Doom",
+    "Lucifer"
+  ],
+  "Dragon Knight": [
+    "Davion the Dragon Knight",
+    "Davion"
+  ],
+  "Drow Ranger": [
+    "Traxex the Drow Ranger",
+    "Traxex"
+  ],
+  "Earth Spirit": [
+    "Kaolin the Earth Spirit",
+    "Kaolin"
+  ],
+  "Earthshaker": [
+    "Raigor Stonehoof the Earthshaker",
+    "Raigor Stonehoof",
+    "Raigor"
+  ],
+  "Elder Titan": [
+    "Elder Titan the Worldsmith",
+    "Worldsmith"
+  ],
+  "Ember Spirit": [
+    "Xin the Ember Spirit",
+    "Xin"
+  ],
+  "Enchantress": [
+    "Aiushtha the Enchantress",
+    "Aiushtha"
+  ],
+  "Enigma": [
+    "Darchow the Enigma",
+    "Darchow"
+  ],
+  "Faceless Void": [
+    "Darkterror the Faceless Void",
+    "Darkterror"
+  ],
+  "Techies": [
+    "Goblin Techies",
+    "Squee, Spleen and Spoon the Goblin Techies",
+    "Squee, Spleen and Spoon",
+    "Squee",
+    "Spleen",
+    "Spoon"
+  ],
+  "Gyrocopter": [
+    "Aurel Vlaicu the Gyrocopter",
+    "Aurel Vlaicu"
+  ],
+  "Huskar": [
+    "Huskar the Sacred Warrior",
+    "Sacred Warrior"
+  ],
+  "Invoker": [
+    "Kael the Invoker",
+    "Kael"
+  ],
+  "Io": [
+    "IO",
+    "IO the Guardian Wisp",
+    "Guardian Wisp"
+  ],
+  "Jakiro": [
+    "Jakiro the Twin Head Dragon",
+    "Twin Head Dragon"
+  ],
+  "Juggernaut": [
+    "Yurnero the Juggernaut",
+    "Yurnero"
+  ],
+  "Keeper of the Light": [
+    "Ezalor the Keeper of the Light",
+    "Ezalor"
+  ],
+  "Kunkka": [
+    "Kunkka the Admiral",
+    "Admiral"
+  ],
+  "Legion Commander": [
+    "Tresdin the Legion Commander",
+    "Tresdin"
+  ],
+  "Leshrac": [
+    "Leshrac the Tormented Soul",
+    "Tormented Soul"
+  ],
+  "Lich": [
+    "Ethreain the Lich",
+    "Ethreain"
+  ],
+  "Lifestealer": [
+    "N'aix the Lifestealer",
+    "Naix"
+  ],
+  "Lina": [
+    "Lina the Slayer",
+    "Slayer"
+  ],
+  "Lion": [
+    "Lion the Demon Witch",
+    "Demon Witch"
+  ],
+  "Lone Druid": [
+    "Sylla the Lone Druid",
+    "Sylla"
+  ],
+  "Luna": [
+    "Luna the Moon Rider",
+    "Moon Rider"
+  ],
+  "Lycan": [
+    "Banehallow the Lycan",
+    "Banehallow"
+  ],
+  "Magnus": [
+    "Magnus the Magnoceros",
+    "Magnoceros"
+  ],
+  "Medusa": [
+    "Medusa the Gorgon",
+    "Gorgon"
+  ],
+  "Meepo": [
+    "Meepo the Geomancer",
+    "Geomancer"
+  ],
+  "Mirana": [
+    "Mirana the Princess of the Moon",
+    "Princess of the Moon"
+  ],
+  "Morphling": [
+    "Morphling"
+  ],
+  "Naga Siren": [
+    "Slithice the Naga Siren",
+    "Slithice"
+  ],
+  "Nature's Prophet": [
+    "Furion the Nature's Prophet",
+    "Furion",
+    "Tequoia"
+  ],
+  "Necrophos": [
+    "Rotund'jere the Necrophos",
+    "Rotund'jere",
+    "Rotundjere"
+  ],
+  "Night Stalker": [
+    "Balanar the Night Stalker",
+    "Balanar"
+  ],
+  "Nyx Assassin": [
+    "Anub'arak the Nyx Assassin",
+    "Anub'arak",
+    "Anubarak"
+  ],
+  "Ogre Magi": [
+    "Aggron Stonebreak the Ogre Magi",
+    "Aggron Stonebreak",
+    "Aggron"
+  ],
+  "Omniknight": [
+    "Purist Thunderwrath the Omniknight",
+    "Purist Thunderwrath",
+    "Purist"
+  ],
+  "Oracle": [
+    "Nerif the Oracle",
+    "Nerif"
+  ],
+  "Outworld Devourer": [
+    "Harbinger the Outworld Devourer",
+    "Harbinger"
+  ],
+  "Phantom Assassin": [
+    "Mortred the Phantom Assassin",
+    "Mortred"
+  ],
+  "Phantom Lancer": [
+    "Azwraith the Phantom Lancer",
+    "Azwraith"
+  ],
+  "Phoenix": [
+    "Icarus the Phoenix",
+    "Icarus"
+  ],
+  "Puck": [
+    "Puck the Faerie Dragon",
+    "Faerie Dragon"
+  ],
+  "Pudge": [
+    "Pudge the Butcher",
+    "Butcher"
+  ],
+  "Pugna": [
+    "Pugna the Oblivion",
+    "Oblivion"
+  ],
+  "Queen of Pain": [
+    "Akasha the Queen of Pain",
+    "Akasha"
+  ],
+  "Razor": [
+    "Razor the Lightning Revenant",
+    "Lightning Revenant"
+  ],
+  "Riki": [
+    "Riki the Stealth Assassin",
+    "Stealth Assassin"
+  ],
+  "Rubick": [
+    "Rubick the Grand Magus",
+    "Grand Magus"
+  ],
+  "Sand King": [
+    "Crixalis the Sand Kind",
+    "Crixalis",
+    "Sand Kind"
+  ],
+  "Shadow Demon": [
+    "Eredar the Shadow Demon",
+    "Eredar"
+  ],
+  "Shadow Fiend": [
+    "Nevermore the Shadow Fiend",
+    "Nevermore"
+  ],
+  "Shadow Shaman": [
+    "Rhasta the Shadow Shaman",
+    "Rhasta"
+  ],
+  "Silencer": [
+    "Nortrom the Silencer",
+    "Nortrom"
+  ],
+  "Skywrath Mage": [
+    "Dragonus the Skywrath Mage",
+    "Dragonus"
+  ],
+  "Slardar": [
+    "Slardar the Slithereen Guard",
+    "Slithereen Guard"
+  ],
+  "Slark": [
+    "Slark the Nightcrawler",
+    "Nightcrawler"
+  ],
+  "Sniper": [
+    "Kardel Sharpeye the Sniper",
+    "Kardel Sharpeye",
+    "Kardel"
+  ],
+  "Spectre": [
+    "Mecurial the Spectre",
+    "Mecurial"
+  ],
+  "Spirit Breaker": [
+    "Barathrum the Spirit Breaker",
+    "Barathrum"
+  ],
+  "Storm Spirit": [
+    "Raijin Thunderkeg the Storm Spirit",
+    "Raijin Thunderkeg",
+    "Raijin"
+  ],
+  "Sven": [
+    "Sven the Rouge Knight",
+    "Rogue Knight",
+    "Rouge Knight"
+  ],
+  "Templar Assassin": [
+    "Lanaya the Templar Assassin",
+    "Lanaya"
+  ],
+  "Terrorblade": [
+    "Terrorblade the Demon Marauder",
+    "Demon Marauder"
+  ],
+  "Tidehunter": [
+    "Leviathan the Tidehunter",
+    "Leviathan"
+  ],
+  "Timbersaw": [
+    "Rizzrak the Timbersaw",
+    "Rizzrak"
+  ],
+  "Tinker": [
+    "Boush the Tinker",
+    "Boush"
+  ],
+  "Tiny": [
+    "Tiny the Stone Giant",
+    "Stone Giant"
+  ],
+  "Treant Protector": [
+    "Rooftrellen the Treant Protector",
+    "Rooftrellen"
+  ],
+  "Troll Warlord": [
+    "Ja'rakal the Troll Warlord",
+    "Ja'rakal",
+    "Jarakal"
+  ],
+  "Tusk": [
+    "Ymir the Tusk",
+    "Ymir"
+  ],
+  "Undying": [
+    "Undying the Almighty Dirge",
+    "Almighty Dirge"
+  ],
+  "Ursa": [
+    "Ulfsaar the Ursa Warrior",
+    "Ulfsaar"
+  ],
+  "Vengeful Spirit": [
+    "Shendelzare the Vengeful Spirit",
+    "Shendelzare"
+  ],
+  "Venomancer": [
+    "Lesale Deathbringer the Venomancer",
+    "Lesale Deathbringer",
+    "Lesale"
+  ],
+  "Viper": [
+    "Viper the Netherdrake",
+    "Netherdrake"
+  ],
+  "Visage": [
+    "Visage the Bound Form of Necro'lic",
+    "Bound Form of Necro'lic",
+    "Necro'lic"
+  ],
+  "Warlock": [
+    "Walock",
+    "Demnok Lannik the Warlock",
+    "Demnok Lannik",
+    "Demnok"
+  ],
+  "Weaver": [
+    "Skitskurr the Weaver",
+    "Skitskurr"
+  ],
+  "Windranger": [
+    "Lyralei the Windranger",
+    "Lyralei"
+  ],
+  "Winter Wyvern": [
+    "Auroth the Winter Wyvern",
+    "Auroth"
+  ],
+  "Witch Doctor": [
+    "Zharvakko the Witch Doctor",
+    "Zharvakko"
+  ],
+  "Wraith King": [
+    "Ostarion the Wraith King",
+    "Ostarion"
+  ],
+  "Zeus": [
+    "Zeus the Lord of Heaven",
+    "Lord of Heaven"
+  ]
+}
