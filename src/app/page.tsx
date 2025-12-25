@@ -40,11 +40,11 @@ type GridConfig = {
 };
 
 const DEFAULT_COLUMNS = 6;
-const SLOT_WIDTH = 316.521759 / 6;
-const SLOT_HEIGHT = 504.347839 / 6;
-const SLOT_INNER_SCALE = 0.9;
+const HERO_WIDTH = 42.009;
+const HERO_HEIGHT = 74.009;
+const HERO_GAP = 12.0608;
 const POOL_ICON_SIZE = 40;
-const BASE_CANVAS_WIDTH = 1182;
+const BASE_CANVAS_WIDTH = 1176.521759;
 
 const heroes = heroData as Hero[];
 const seedGrid = defaultGrid as GridConfig;
@@ -72,9 +72,42 @@ const stripUids = (configs: ConfigWithUid[]): Config[] =>
 const estimateCategorySize = (heroCount: number) => {
   const columns = DEFAULT_COLUMNS;
   const rows = Math.max(1, Math.ceil(heroCount / columns));
-  const width = columns * SLOT_WIDTH;
-  const height = rows * SLOT_HEIGHT;
+  const width = columns * HERO_WIDTH + (columns - 1) * HERO_GAP;
+  const height = rows * HERO_HEIGHT + (rows - 1) * HERO_GAP;
   return { width, height };
+};
+
+const computeLayout = (
+  width: number,
+  height: number,
+  itemCount: number
+) => {
+  const safeWidth = Math.max(width, HERO_WIDTH);
+  const safeHeight = Math.max(height, HERO_HEIGHT);
+  const totalItems = Math.max(1, itemCount);
+  let best = { columns: 1, rows: totalItems, scale: 0 };
+
+  for (let columns = 1; columns <= totalItems; columns += 1) {
+    const rows = Math.max(1, Math.ceil(totalItems / columns));
+    const denomX = columns * HERO_WIDTH + (columns - 1) * HERO_GAP;
+    const denomY = rows * HERO_HEIGHT + (rows - 1) * HERO_GAP;
+    if (denomX <= 0 || denomY <= 0) continue;
+    const scaleX = safeWidth / denomX;
+    const scaleY = safeHeight / denomY;
+    if (!Number.isFinite(scaleX) || !Number.isFinite(scaleY)) continue;
+    const rawScale = Math.min(scaleX, scaleY);
+    if (rawScale <= 0) continue;
+    const scale = Math.min(rawScale, 3);
+    if (
+      scale > best.scale + 1e-6 ||
+      (Math.abs(scale - best.scale) <= 1e-6 && rows < best.rows) ||
+      (Math.abs(scale - best.scale) <= 1e-6 && rows === best.rows && columns > best.columns)
+    ) {
+      best = { columns, rows, scale };
+    }
+  }
+
+  return best;
 };
 
 const buildDefaultConfig = (heroesList: Hero[]): ConfigWithUid => {
@@ -129,6 +162,22 @@ export default function Home() {
   const [dragOverUid, setDragOverUid] = useState<string | null>(null);
   const [pickerCategoryUid, setPickerCategoryUid] = useState<string | null>(null);
   const [pickerQuery, setPickerQuery] = useState("");
+  const [resizeState, setResizeState] = useState<{
+    uid: string;
+    startX: number;
+    startY: number;
+    startWidth: number;
+    startHeight: number;
+    startLeft: number;
+  } | null>(null);
+  const [dragState, setDragState] = useState<{
+    uid: string;
+    startX: number;
+    startY: number;
+    startLeft: number;
+    startTop: number;
+    startWidth: number;
+  } | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -173,20 +222,96 @@ export default function Home() {
     if (!activeConfig) {
       return { width: BASE_CANVAS_WIDTH, height: 600 };
     }
-    const maxX = Math.max(
-      ...activeConfig.categories.map((category) => category.x_position + category.width),
-      BASE_CANVAS_WIDTH
-    );
-    const maxY = Math.max(
-      ...activeConfig.categories.map((category) => category.y_position + category.height),
-      600
-    );
+    const widths = activeConfig.categories
+      .map((category) => category.x_position + category.width)
+      .filter((value) => Number.isFinite(value));
+    const heights = activeConfig.categories
+      .map((category) => category.y_position + category.height)
+      .filter((value) => Number.isFinite(value));
+    const maxX = Math.max(...widths, BASE_CANVAS_WIDTH);
+    const maxY = Math.max(...heights, 600);
     return { width: maxX, height: maxY };
   }, [activeConfig]);
 
   const scale = canvasWidth
     ? Math.min(1, canvasWidth / canvasBounds.width)
     : 1;
+  const safeScale = Number.isFinite(scale) && scale > 0 ? scale : 1;
+
+  useEffect(() => {
+    if (!resizeState) return;
+    const handleMove = (event: MouseEvent) => {
+      event.preventDefault();
+      const deltaX = (event.clientX - resizeState.startX) / safeScale;
+      const deltaY = (event.clientY - resizeState.startY) / safeScale;
+      const minWidth = HERO_WIDTH;
+      const minHeight = HERO_HEIGHT;
+      const maxWidth = Math.max(
+        minWidth,
+        BASE_CANVAS_WIDTH - resizeState.startLeft
+      );
+      const nextWidth = Math.min(
+        maxWidth,
+        Math.max(minWidth, resizeState.startWidth + deltaX)
+      );
+      const nextHeight = Math.max(minHeight, resizeState.startHeight + deltaY);
+      if (!Number.isFinite(nextWidth) || !Number.isFinite(nextHeight)) {
+        return;
+      }
+      updateActiveConfig((config) => ({
+        ...config,
+        categories: config.categories.map((category) =>
+          category.uid === resizeState.uid
+            ? { ...category, width: nextWidth, height: nextHeight }
+            : category
+        ),
+      }));
+    };
+    const handleUp = () => setResizeState(null);
+    window.addEventListener("mousemove", handleMove);
+    window.addEventListener("mouseup", handleUp);
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("mouseup", handleUp);
+    };
+  }, [resizeState, safeScale]);
+
+  useEffect(() => {
+    if (!dragState) return;
+    const handleMove = (event: MouseEvent) => {
+      event.preventDefault();
+      const deltaX = (event.clientX - dragState.startX) / safeScale;
+      const deltaY = (event.clientY - dragState.startY) / safeScale;
+      const maxX = Math.max(0, BASE_CANVAS_WIDTH - dragState.startWidth);
+      const nextX = Math.min(
+        maxX,
+        Math.max(0, dragState.startLeft + deltaX)
+      );
+      const nextY = Math.max(0, dragState.startTop + deltaY);
+      if (!Number.isFinite(nextX) || !Number.isFinite(nextY)) {
+        return;
+      }
+      updateActiveConfig((config) => ({
+        ...config,
+        categories: config.categories.map((category) =>
+          category.uid === dragState.uid
+            ? {
+                ...category,
+                x_position: nextX,
+                y_position: nextY,
+              }
+            : category
+        ),
+      }));
+    };
+    const handleUp = () => setDragState(null);
+    window.addEventListener("mousemove", handleMove);
+    window.addEventListener("mouseup", handleUp);
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("mouseup", handleUp);
+    };
+  }, [dragState, safeScale]);
 
   const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -291,7 +416,10 @@ export default function Home() {
           ...category,
           x_position: 0,
           y_position: cursorY,
-          width: Math.max(width, DEFAULT_COLUMNS * SLOT_WIDTH),
+          width: Math.max(
+            width,
+            DEFAULT_COLUMNS * HERO_WIDTH + (DEFAULT_COLUMNS - 1) * HERO_GAP
+          ),
           height,
         };
         cursorY += normalized.height + 22;
@@ -312,8 +440,8 @@ export default function Home() {
         category_name: "New Category",
         x_position: 0,
         y_position: maxY + 30,
-        width: DEFAULT_COLUMNS * SLOT_WIDTH,
-        height: SLOT_HEIGHT * 2,
+        width: DEFAULT_COLUMNS * HERO_WIDTH + (DEFAULT_COLUMNS - 1) * HERO_GAP,
+        height: HERO_HEIGHT * 2 + HERO_GAP,
         hero_ids: [],
       };
       return { ...config, categories: [...config.categories, newCategory] };
@@ -343,22 +471,27 @@ export default function Home() {
     }));
   };
 
+  const startCategoryDrag = (
+    event: React.MouseEvent,
+    category: CategoryWithUid
+  ) => {
+    event.preventDefault();
+    setDragState({
+      uid: category.uid,
+      startX: event.clientX,
+      startY: event.clientY,
+      startLeft: category.x_position,
+      startTop: category.y_position,
+      startWidth: category.width,
+    });
+  };
+
   const addHeroToCategory = (categoryUid: string, heroId: number) => {
     updateActiveConfig((config) => ({
       ...config,
       categories: config.categories.map((category) =>
         category.uid === categoryUid && !category.hero_ids.includes(heroId)
-          ? (() => {
-              const nextHeroIds = [...category.hero_ids, heroId];
-              const columns = Math.max(1, Math.round(category.width / SLOT_WIDTH));
-              const rowsNeeded = Math.max(1, Math.ceil(nextHeroIds.length / columns));
-              const minHeight = rowsNeeded * SLOT_HEIGHT;
-              return {
-                ...category,
-                hero_ids: nextHeroIds,
-                height: Math.max(category.height, minHeight),
-              };
-            })()
+          ? { ...category, hero_ids: [...category.hero_ids, heroId] }
           : category
       ),
     }));
@@ -562,14 +695,14 @@ export default function Home() {
                 }}
               />
               {activeConfig.categories.map((category) => {
-                const columns = Math.max(
-                  1,
-                  Math.round(category.width / SLOT_WIDTH)
+                const layout = computeLayout(
+                  category.width,
+                  category.height,
+                  category.hero_ids.length + 1
                 );
-                const slotWidthPx = SLOT_WIDTH * scale;
-                const slotHeightPx = SLOT_HEIGHT * scale;
-                const innerWidthPx = slotWidthPx * SLOT_INNER_SCALE;
-                const innerHeightPx = slotHeightPx * SLOT_INNER_SCALE;
+                const heroWidthPx = HERO_WIDTH * layout.scale * scale;
+                const heroHeightPx = HERO_HEIGHT * layout.scale * scale;
+                const gapPx = HERO_GAP * layout.scale * scale;
                 const pickerOpen = pickerCategoryUid === category.uid;
                 const pickerResults = heroes.filter((hero) =>
                   hero.name.toLowerCase().includes(pickerQuery.trim().toLowerCase())
@@ -585,7 +718,14 @@ export default function Home() {
                         current === category.uid ? null : current
                       )
                     }
-                    className={`absolute rounded-2xl border border-[color:var(--faint)] bg-[color:var(--panel-bright)]/80 transition ${
+                    onMouseDown={(event) => {
+                      const target = event.target as HTMLElement;
+                      if (target.closest("[data-no-drag]")) {
+                        return;
+                      }
+                      startCategoryDrag(event, category);
+                    }}
+                    className={`absolute cursor-move rounded-2xl border border-[color:var(--faint)] bg-[color:var(--panel-bright)]/80 transition ${
                       dragOverUid === category.uid
                         ? "ring-2 ring-[color:var(--gold)]"
                         : ""
@@ -600,6 +740,7 @@ export default function Home() {
                   >
                     <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-2 bg-gradient-to-b from-black/70 to-transparent px-3 py-2 text-xs uppercase tracking-[0.2em] text-[color:var(--mist)]">
                       <input
+                        data-no-drag
                         value={category.category_name}
                         onChange={(event) => {
                           const value = event.target.value;
@@ -615,6 +756,7 @@ export default function Home() {
                         className="w-full bg-transparent outline-none"
                       />
                       <button
+                        data-no-drag
                         onClick={() =>
                           updateActiveConfig((config) => ({
                             ...config,
@@ -631,8 +773,10 @@ export default function Home() {
                     <div
                       className="grid"
                       style={{
-                        gridTemplateColumns: `repeat(${columns}, ${slotWidthPx}px)`,
-                        gridAutoRows: `${slotHeightPx}px`,
+                        gridTemplateColumns: `repeat(${layout.columns}, ${heroWidthPx}px)`,
+                        gridAutoRows: `${heroHeightPx}px`,
+                        columnGap: `${gapPx}px`,
+                        rowGap: `${gapPx}px`,
                       }}
                     >
                       {category.hero_ids.map((heroId) => {
@@ -642,7 +786,7 @@ export default function Home() {
                           <div
                             key={`${category.uid}-${heroId}`}
                             className="group relative flex items-center justify-center"
-                            style={{ width: slotWidthPx, height: slotHeightPx }}
+                            style={{ width: heroWidthPx, height: heroHeightPx }}
                           >
                             <button
                               draggable
@@ -657,15 +801,15 @@ export default function Home() {
                                 event.dataTransfer.effectAllowed = "copyMove";
                               }}
                               className="relative flex items-center justify-center rounded-md border border-transparent transition hover:border-[color:var(--gold)]"
-                              style={{ width: innerWidthPx, height: innerHeightPx }}
+                              style={{ width: heroWidthPx, height: heroHeightPx }}
                               title={hero.name}
                             >
                               <Image
                                 src={hero.img}
                                 alt={hero.name}
                                 fill
-                                sizes="100%"
-                                className="rounded-md object-cover"
+                                sizes="100vw"
+                                className="h-full w-full rounded-md object-cover"
                               />
                             </button>
                             <button
@@ -679,28 +823,50 @@ export default function Home() {
                         );
                       })}
                       <button
+                        data-no-drag
                         onClick={() => {
                           setPickerCategoryUid(category.uid);
                           setPickerQuery("");
                         }}
                         className="flex items-center justify-center rounded-md border border-dashed border-[color:var(--faint)] p-0 text-[20px] leading-none text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
-                        style={{ width: slotWidthPx, height: slotHeightPx }}
+                        style={{ width: heroWidthPx, height: heroHeightPx }}
                         aria-label="Add hero"
                         type="button"
                       >
                         +
                       </button>
                     </div>
+                    <button
+                      data-no-drag
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        setResizeState({
+                          uid: category.uid,
+                          startX: event.clientX,
+                          startY: event.clientY,
+                          startWidth: category.width,
+                          startHeight: category.height,
+                          startLeft: category.x_position,
+                        });
+                      }}
+                      className="absolute bottom-1 right-1 flex h-6 w-6 items-center justify-center rounded-full border border-[color:var(--faint)] bg-black/40 text-[10px] uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
+                      aria-label="Resize category"
+                      type="button"
+                    >
+                      ↘
+                    </button>
                     {pickerOpen ? (
                       <div className="absolute inset-x-3 top-12 z-20 rounded-2xl border border-[color:var(--faint)] bg-[color:var(--panel)]/95 p-3 shadow-[0_15px_40px_rgba(0,0,0,0.45)]">
                         <div className="flex items-center justify-between gap-2">
                           <input
+                            data-no-drag
                             value={pickerQuery}
                             onChange={(event) => setPickerQuery(event.target.value)}
                             placeholder="Search hero..."
                             className="w-full rounded-xl border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-3 py-1 text-xs text-white outline-none transition focus:border-[color:var(--gold)]"
                           />
                           <button
+                            data-no-drag
                             onClick={() => setPickerCategoryUid(null)}
                             className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--mist)] hover:text-white"
                           >
