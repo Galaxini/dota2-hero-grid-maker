@@ -40,6 +40,8 @@ type GridConfig = {
   configs: Config[];
 };
 
+type Language = "ru" | "en";
+
 const DEFAULT_COLUMNS = 6;
 const HERO_WIDTH = 42.78465715;
 const HERO_HEIGHT = 74.09050379;
@@ -82,6 +84,99 @@ const estimateCategorySize = (heroCount: number) => {
 
 const normalizeQuery = (value: string) =>
   value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
+const translations = {
+  en: {
+    appKicker: "Dota 2 Grid Workshop",
+    appTitle: "Hero Grid Maker",
+    appSubtitle:
+      "Drag heroes, build categories, and export JSON matching the Dota 2 format.",
+    appHint: "Alt + drag = copy, drag without Alt = move.",
+    importJson: "Import JSON",
+    exportJson: "Export JSON",
+    edit: "Edit",
+    save: "Save",
+    activeLayout: "Active layout",
+    newLayout: "+ New Layout",
+    deleteLayout: "Delete Layout",
+    name: "Name",
+    addCategory: "+ Add Category",
+    currentMeta: "Current Meta 7.40b",
+    metaHint: "10 random heroes per role (temporary list)",
+    roleCarry: "Carry",
+    roleMid: "Mid",
+    roleOfflane: "Offlane",
+    roleSoftSupport: "Soft Support",
+    roleHardSupport: "Hard Support",
+    noLayouts: "No layouts loaded.",
+    importSuccess: "Layout imported.",
+    importFail: "Failed to import JSON. Check the layout format.",
+    downloadSuccess: "JSON downloaded.",
+    invalidLayout: "Invalid layout format.",
+    unsavedWarning: "Changes you made may not be saved.",
+    deleteLayoutTitle: "Delete layout?",
+    deleteLayoutBody: "Layout will be deleted and cannot be recovered.",
+    cancel: "Cancel",
+    delete: "Delete",
+    chooseHero: "Choose a hero",
+    searchHero: "Search hero...",
+    close: "Close",
+    categorySettings: "Category settings",
+    deleteCategory: "Delete Category",
+    deleteCategoryTitle: "Delete category?",
+    deleteCategoryBody: "Category will be deleted and cannot be recovered.",
+    category: "Category",
+    newCategoryName: "New Category",
+    cancelChangesTitle: "Cancel changes?",
+    stay: "Stay",
+    cancelChanges: "Discard",
+  },
+  ru: {
+    appKicker: "Dota 2 Grid Workshop",
+    appTitle: "Hero Grid Maker",
+    appSubtitle:
+      "Перетаскивай героев, строй категории и экспортируй JSON, идентичный формату Dota 2.",
+    appHint: "Alt + drag = копия, drag без Alt = перенос.",
+    importJson: "Импорт JSON",
+    exportJson: "Экспорт JSON",
+    edit: "Редактировать",
+    save: "Сохранить",
+    activeLayout: "Активный лейаут",
+    newLayout: "+ Новый лейаут",
+    deleteLayout: "Удалить лейаут",
+    name: "Имя",
+    addCategory: "+ Добавить категорию",
+    currentMeta: "Текущая мета 7.40b",
+    metaHint: "10 случайных героев на роль (временный список)",
+    roleCarry: "Керри",
+    roleMid: "Мид",
+    roleOfflane: "Оффлейн",
+    roleSoftSupport: "Саппорт 4",
+    roleHardSupport: "Саппорт 5",
+    noLayouts: "Лейауты не загружены.",
+    importSuccess: "Лейаут импортирован.",
+    importFail: "Не удалось импортировать JSON. Проверь формат лейаута.",
+    downloadSuccess: "JSON скачан.",
+    invalidLayout: "Неверный формат лейаута.",
+    unsavedWarning: "Изменения могут быть утеряны.",
+    deleteLayoutTitle: "Удалить лейаут?",
+    deleteLayoutBody: "Лейаут будет удалён без возможности восстановления.",
+    cancel: "Отмена",
+    delete: "Удалить",
+    chooseHero: "Выберите героя",
+    searchHero: "Поиск героя...",
+    close: "Закрыть",
+    categorySettings: "Настройки категории",
+    deleteCategory: "Удалить категорию",
+    deleteCategoryTitle: "Удалить категорию?",
+    deleteCategoryBody: "Категория будет удалена без возможности восстановления.",
+    category: "Категория",
+    newCategoryName: "Новая категория",
+    cancelChangesTitle: "Отменить изменения?",
+    stay: "Остаться",
+    cancelChanges: "Отменить",
+  },
+} as const;
 
 const seededRandom = (seed: string) => {
   let hash = 0;
@@ -206,10 +301,90 @@ export default function Home() {
   const [dragOverUid, setDragOverUid] = useState<string | null>(null);
   const [pickerCategoryUid, setPickerCategoryUid] = useState<string | null>(null);
   const [pickerQuery, setPickerQuery] = useState("");
-  const [editMode, setEditMode] = useState(true);
+  const [editMode, setEditMode] = useState(false);
   const [pendingRemoveIndex, setPendingRemoveIndex] = useState<number | null>(
     null
   );
+  const [categorySettingsUid, setCategorySettingsUid] = useState<string | null>(
+    null
+  );
+  const [pendingCategoryDeleteUid, setPendingCategoryDeleteUid] = useState<
+    string | null
+  >(null);
+  const [pendingCancelEdit, setPendingCancelEdit] = useState(false);
+  const [language, setLanguage] = useState<Language>("ru");
+  const t = translations[language];
+  const editSnapshotRef = useRef<{
+    version: number;
+    configs: ConfigWithUid[];
+    activeIndex: number;
+  } | null>(null);
+
+  useEffect(() => {
+    const saved =
+      typeof window !== "undefined"
+        ? (window.localStorage.getItem("dota2-grid-language") as Language | null)
+        : null;
+    if (saved === "ru" || saved === "en") {
+      setLanguage(saved);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem("dota2-grid-language", language);
+  }, [language]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const raw = window.localStorage.getItem("dota2-grid-layouts");
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw) as GridConfig;
+      if (!parsed.configs || !Array.isArray(parsed.configs)) return;
+      setGridVersion(parsed.version ?? 3);
+      setConfigs(withCategoryUids(parsed.configs));
+      const savedIndex = Number(
+        window.localStorage.getItem("dota2-grid-active-layout")
+      );
+      if (Number.isFinite(savedIndex) && savedIndex >= 0) {
+        setActiveConfigIndex(
+          Math.min(savedIndex, parsed.configs.length - 1)
+        );
+      }
+      setEditMode(false);
+    } catch {
+      // ignore corrupted cache
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(
+      "dota2-grid-active-layout",
+      String(activeConfigIndex)
+    );
+  }, [activeConfigIndex]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (!editMode) return;
+      event.preventDefault();
+      event.returnValue = t.unsavedWarning;
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [editMode, t.unsavedWarning]);
+
+  useEffect(() => {
+    if (editMode) {
+      editSnapshotRef.current = {
+        version: gridVersion,
+        configs,
+        activeIndex: activeConfigIndex,
+      };
+    }
+  }, [editMode, gridVersion, configs, activeConfigIndex]);
   const [resizeState, setResizeState] = useState<{
     uid: string;
     startX: number;
@@ -242,6 +417,18 @@ export default function Home() {
     });
     observer.observe(element);
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setPickerCategoryUid(null);
+      setPendingRemoveIndex(null);
+      setCategorySettingsUid(null);
+      setPendingCategoryDeleteUid(null);
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
   }, []);
 
   const heroById = useMemo(() => {
@@ -304,11 +491,11 @@ export default function Home() {
 
   const metaRoles = useMemo(() => {
     const roles = [
-      "Carry",
-      "Mid",
-      "Offlane",
-      "Soft Support",
-      "Hard Support",
+      t.roleCarry,
+      t.roleMid,
+      t.roleOfflane,
+      t.roleSoftSupport,
+      t.roleHardSupport,
     ];
     const shuffled = shuffleWithSeed(heroes, "meta-740b");
     const groups: { name: string; heroes: Hero[] }[] = [];
@@ -321,7 +508,7 @@ export default function Home() {
       index += 10;
     });
     return groups;
-  }, [heroes]);
+  }, [heroes, t]);
   const pickerCategory = useMemo(
     () =>
       activeConfig?.categories.find(
@@ -433,14 +620,14 @@ export default function Home() {
       try {
         const parsed = JSON.parse(String(reader.result)) as GridConfig;
         if (!parsed.configs || !Array.isArray(parsed.configs)) {
-          throw new Error("Invalid config format.");
+          throw new Error(t.invalidLayout);
         }
         setGridVersion(parsed.version ?? 3);
         setConfigs(withCategoryUids(parsed.configs));
         setActiveConfigIndex(0);
-        setStatus("Config imported.");
+        setStatus(t.importSuccess);
       } catch (error) {
-        setStatus("Failed to import JSON. Проверь формат файла.");
+        setStatus(t.importFail);
       } finally {
         event.target.value = "";
       }
@@ -462,7 +649,19 @@ export default function Home() {
     anchor.download = "hero_grid_config.json";
     anchor.click();
     URL.revokeObjectURL(url);
-    setStatus("JSON downloaded.");
+    setStatus(t.downloadSuccess);
+  };
+
+  const persistLayouts = () => {
+    if (typeof window === "undefined") return;
+    const payload: GridConfig = {
+      version: gridVersion,
+      configs: stripUids(configs),
+    };
+    window.localStorage.setItem(
+      "dota2-grid-layouts",
+      JSON.stringify(payload)
+    );
   };
 
   const updateActiveConfig = (updater: (config: ConfigWithUid) => ConfigWithUid) => {
@@ -549,7 +748,7 @@ export default function Home() {
       );
       const newCategory: CategoryWithUid = {
         uid: makeUid(),
-        category_name: "New Category",
+        category_name: t.newCategoryName,
         x_position: 0,
         y_position: maxY + 30,
         width: 5 * HERO_WIDTH + 4 * HERO_GAP,
@@ -621,7 +820,7 @@ export default function Home() {
   if (!activeConfig) {
     return (
       <div className="min-h-screen px-6 py-16 text-center text-sm text-[color:var(--mist)]">
-        No configs loaded.
+        {t.noLayouts}
       </div>
     );
   }
@@ -633,14 +832,13 @@ export default function Home() {
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="space-y-2">
               <p className="text-xs uppercase tracking-[0.4em] text-[color:var(--gold)]">
-                Dota 2 Grid Workshop
+                {t.appKicker}
               </p>
               <h1 className="text-4xl font-[var(--font-display)] tracking-wide text-white">
-                Hero Grid Maker
+                {t.appTitle}
               </h1>
               <p className="max-w-xl text-sm text-[color:var(--mist)]">
-                Перетаскивай героев, строй категории и экспортируй JSON, идентичный
-                формату Dota 2. Alt + drag = копия, drag без Alt = перенос.
+                {t.appSubtitle} {t.appHint}
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3 text-xs">
@@ -648,28 +846,37 @@ export default function Home() {
                 onClick={() => fileInputRef.current?.click()}
                 className="rounded-full border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
               >
-                Import JSON
+                {t.importJson}
               </button>
               <button
                 onClick={downloadConfig}
                 className="rounded-full bg-[color:var(--ember)] px-4 py-2 uppercase tracking-[0.2em] text-white shadow-[0_0_25px_rgba(231,91,58,0.45)] transition hover:-translate-y-0.5"
               >
-                Export JSON
+                {t.exportJson}
               </button>
               <button
-                onClick={createConfig}
+                onClick={() =>
+                  setLanguage((current) => (current === "ru" ? "en" : "ru"))
+                }
                 className="rounded-full border border-[color:var(--faint)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
               >
-                New Config
+                {language === "ru" ? "EN" : "RU"}
               </button>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-4 text-xs text-[color:var(--mist)]">
             <label className="flex items-center gap-3">
-              <span className="uppercase tracking-[0.2em]">Active config</span>
+              <span className="uppercase tracking-[0.2em]">{t.activeLayout}</span>
               <select
                 value={activeConfigIndex}
-                onChange={(event) => setActiveConfigIndex(Number(event.target.value))}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  if (value === "__new__") {
+                    createConfig();
+                    return;
+                  }
+                  setActiveConfigIndex(Number(value));
+                }}
                 className="rounded-full border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 text-white"
               >
                 {configs.map((config, index) => (
@@ -677,6 +884,7 @@ export default function Home() {
                     {config.config_name}
                   </option>
                 ))}
+                <option value="__new__">{t.newLayout}</option>
               </select>
             </label>
             <button
@@ -687,10 +895,10 @@ export default function Home() {
               disabled={configs.length <= 1}
               className="rounded-full border border-red-500/60 px-4 py-2 uppercase tracking-[0.2em] text-red-200 transition hover:border-red-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-red-500/60 disabled:hover:text-red-200"
             >
-              Delete Layout
+              {t.deleteLayout}
             </button>
             <label className="flex items-center gap-3">
-              <span className="uppercase tracking-[0.2em]">Name</span>
+              <span className="uppercase tracking-[0.2em]">{t.name}</span>
               <input
                 value={activeConfig.config_name}
                 onChange={(event) => {
@@ -709,18 +917,33 @@ export default function Home() {
                   onClick={addCategory}
                   className="h-[50px] w-[200px] rounded-full border border-dashed border-[color:var(--faint)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
                 >
-                  + Add Category
+                  {t.addCategory}
+                </button>
+              ) : null}
+              {editMode ? (
+                <button
+                  onClick={() => setPendingCancelEdit(true)}
+                  className="h-[50px] w-[200px] rounded-full border border-[color:var(--faint)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
+                >
+                  {t.cancel}
                 </button>
               ) : null}
               <button
-                onClick={() => setEditMode((current) => !current)}
+                onClick={() => {
+                  if (editMode) {
+                    persistLayouts();
+                    setEditMode(false);
+                    return;
+                  }
+                  setEditMode(true);
+                }}
                 className={`h-[50px] w-[200px] rounded-full px-4 py-2 uppercase tracking-[0.2em] text-white shadow-[0_0_25px_rgba(0,0,0,0.25)] transition hover:-translate-y-0.5 ${
                   editMode
                     ? "bg-emerald-500/90"
                     : "bg-[color:var(--ember)]"
                 }`}
               >
-                {editMode ? "Save" : "Edit"}
+                {editMode ? t.save : t.edit}
               </button>
             </div>
           </div>
@@ -742,11 +965,9 @@ export default function Home() {
           <aside className="space-y-4 rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)]/85 p-5 backdrop-blur">
             <div className="space-y-1">
               <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--mist)]">
-                Current Meta 7.40b
+                {t.currentMeta}
               </p>
-              <p className="text-[11px] text-[color:var(--mist)]">
-                10 random heroes per role (temporary list)
-              </p>
+              <p className="text-[11px] text-[color:var(--mist)]">{t.metaHint}</p>
             </div>
             <div className="space-y-5">
               {metaRoles.map((role) => (
@@ -850,29 +1071,24 @@ export default function Home() {
                       transformOrigin: "top left",
                     }}
                   >
-                    <div className="absolute -top-6 left-0 z-20 flex items-center gap-2 text-[10px] uppercase tracking-[0.35em] text-[color:var(--mist)]">
-                      <span>✦</span>
-                      <span>{category.category_name}</span>
-                      <span>✦</span>
-                      <span className="ml-1 text-[12px]">⚙</span>
-                    </div>
-                    {editMode ? (
-                      <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-end gap-2 bg-gradient-to-b from-black/70 to-transparent px-3 py-2 text-xs uppercase tracking-[0.2em] text-[color:var(--mist)]">
+                    <div className="absolute -top-7 left-0 z-20 flex items-center gap-2 text-[10px] uppercase tracking-[0.35em] text-[color:var(--mist)]">
+                      <span className="text-[14px]">{category.category_name}</span>
+                      {editMode ? (
                         <button
                           data-no-drag
-                          onClick={() =>
-                            updateActiveConfig((config) => ({
-                              ...config,
-                              categories: config.categories.filter(
-                                (cat) => cat.uid !== category.uid
-                              ),
-                            }))
-                          }
-                          className="text-[10px] uppercase tracking-[0.2em] hover:text-white"
+                          onClick={() => {
+                            setCategorySettingsUid(category.uid);
+                          }}
+                          className="mb-1 text-[20px] transition hover:text-white"
+                        aria-label={t.categorySettings}
+                          type="button"
                         >
-                          Remove
+                          ⚙
                         </button>
-                      </div>
+                      ) : null}
+                    </div>
+                    {editMode ? (
+                      <div className="absolute inset-x-0 top-0 z-10 h-6 bg-gradient-to-b from-black/70 to-transparent" />
                     ) : null}
                     <div
                       className="grid"
@@ -982,16 +1198,18 @@ export default function Home() {
       {pendingRemoveIndex !== null ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
           <div className="w-full max-w-md rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
-            <h2 className="text-lg font-semibold text-white">Remove config?</h2>
+            <h2 className="text-lg font-semibold text-white">
+              {t.deleteLayoutTitle}
+            </h2>
             <p className="mt-2 text-sm text-[color:var(--mist)]">
-              Конфиг будет удалён без возможности восстановления.
+              {t.deleteLayoutBody}
             </p>
             <div className="mt-6 flex items-center justify-end gap-3 text-xs uppercase tracking-[0.2em]">
               <button
                 onClick={() => setPendingRemoveIndex(null)}
                 className="rounded-full border border-[color:var(--faint)] px-4 py-2 text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
               >
-                Cancel
+                {t.cancel}
               </button>
               <button
                 onClick={() => {
@@ -1006,7 +1224,7 @@ export default function Home() {
                 }}
                 className="rounded-full bg-[color:var(--ember)] px-4 py-2 text-white shadow-[0_0_25px_rgba(231,91,58,0.45)]"
               >
-                Remove
+                {t.delete}
               </button>
             </div>
           </div>
@@ -1018,16 +1236,16 @@ export default function Home() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--mist)]">
-                  Choose a hero
+                  {t.chooseHero}
                 </p>
                 <p className="text-sm text-white">
-                  {pickerCategory?.category_name || "Category"}
+                  {pickerCategory?.category_name || t.category}
                 </p>
               </div>
               <input
                 value={pickerQuery}
                 onChange={(event) => setPickerQuery(event.target.value)}
-                placeholder="Search hero..."
+                placeholder={t.searchHero}
                 className="w-full max-w-xs rounded-xl border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-3 py-2 text-xs text-white outline-none transition focus:border-[color:var(--gold)]"
               />
             </div>
@@ -1071,7 +1289,162 @@ export default function Home() {
                 onClick={() => setPickerCategoryUid(null)}
                 className="rounded-full border border-[color:var(--faint)] px-4 py-2 text-xs uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
               >
-                Close
+                {t.close}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {categorySettingsUid ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+          <div className="w-full max-w-md rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
+            <h2 className="text-lg font-semibold text-white">
+              {t.categorySettings}
+            </h2>
+            <div className="mt-4 space-y-3 text-xs text-[color:var(--mist)]">
+              <label className="grid gap-2">
+                <span className="uppercase tracking-[0.2em]">{t.name}</span>
+                <input
+                  value={
+                    activeConfig.categories.find(
+                      (category) => category.uid === categorySettingsUid
+                    )?.category_name ?? ""
+                  }
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    updateActiveConfig((config) => ({
+                      ...config,
+                      categories: config.categories.map((category) =>
+                        category.uid === categorySettingsUid
+                          ? { ...category, category_name: value }
+                          : category
+                      ),
+                    }));
+                  }}
+                  className="rounded-xl border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-3 py-2 text-sm text-white outline-none transition focus:border-[color:var(--gold)]"
+                />
+              </label>
+            </div>
+            <div className="mt-6 flex items-center justify-between">
+              <button
+                onClick={() => setPendingCategoryDeleteUid(categorySettingsUid)}
+                className="rounded-full border border-red-500/60 px-4 py-2 text-xs uppercase tracking-[0.2em] text-red-200 transition hover:border-red-400 hover:text-white"
+              >
+                {t.deleteCategory}
+              </button>
+              <button
+                onClick={() => setCategorySettingsUid(null)}
+                className="rounded-full bg-emerald-500/90 px-4 py-2 text-xs uppercase tracking-[0.2em] text-white shadow-[0_0_25px_rgba(16,185,129,0.35)] transition hover:-translate-y-0.5"
+              >
+                {t.save}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {pendingCategoryDeleteUid ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+          <div className="w-full max-w-md rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
+            <h2 className="text-lg font-semibold text-white">
+              {t.deleteCategoryTitle}
+            </h2>
+            <p className="mt-2 text-sm text-[color:var(--mist)]">
+              {t.deleteCategoryBody}
+            </p>
+            <div className="mt-6 flex items-center justify-end gap-3 text-xs uppercase tracking-[0.2em]">
+              <button
+                onClick={() => setPendingCategoryDeleteUid(null)}
+                className="rounded-full border border-[color:var(--faint)] px-4 py-2 text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
+              >
+                {t.cancel}
+              </button>
+              <button
+                onClick={() => {
+                  updateActiveConfig((config) => ({
+                    ...config,
+                    categories: config.categories.filter(
+                      (category) => category.uid !== pendingCategoryDeleteUid
+                    ),
+                  }));
+                  setPendingCategoryDeleteUid(null);
+                  setCategorySettingsUid(null);
+                }}
+                className="rounded-full bg-[color:var(--ember)] px-4 py-2 text-white shadow-[0_0_25px_rgba(231,91,58,0.45)]"
+              >
+                {t.delete}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {pendingCancelEdit ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+          <div className="w-full max-w-md rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
+            <h2 className="text-lg font-semibold text-white">
+              {t.cancelChangesTitle}
+            </h2>
+            <p className="mt-2 text-sm text-[color:var(--mist)]">
+              {t.unsavedWarning}
+            </p>
+            <div className="mt-6 flex items-center justify-end gap-3 text-xs uppercase tracking-[0.2em]">
+              <button
+                onClick={() => setPendingCancelEdit(false)}
+                className="rounded-full border border-[color:var(--faint)] px-4 py-2 text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
+              >
+                {t.stay}
+              </button>
+              <button
+                onClick={() => {
+                  const snapshot = editSnapshotRef.current;
+                  if (!snapshot) {
+                    setPendingCancelEdit(false);
+                    return;
+                  }
+                  const stored =
+                    typeof window !== "undefined"
+                      ? window.localStorage.getItem("dota2-grid-layouts")
+                      : null;
+                  if (stored) {
+                    try {
+                      const parsed = JSON.parse(stored) as GridConfig;
+                      if (parsed.configs && Array.isArray(parsed.configs)) {
+                        setGridVersion(parsed.version ?? snapshot.version);
+                        setConfigs(withCategoryUids(parsed.configs));
+                        const savedIndex = Number(
+                          window.localStorage.getItem("dota2-grid-active-layout")
+                        );
+                        if (Number.isFinite(savedIndex) && savedIndex >= 0) {
+                          setActiveConfigIndex(
+                            Math.min(savedIndex, parsed.configs.length - 1)
+                          );
+                        } else {
+                          setActiveConfigIndex(snapshot.activeIndex);
+                        }
+                      } else {
+                        setGridVersion(snapshot.version);
+                        setConfigs(snapshot.configs);
+                        setActiveConfigIndex(snapshot.activeIndex);
+                      }
+                    } catch {
+                      setGridVersion(snapshot.version);
+                      setConfigs(snapshot.configs);
+                      setActiveConfigIndex(snapshot.activeIndex);
+                    }
+                  } else {
+                    setGridVersion(snapshot.version);
+                    setConfigs(snapshot.configs);
+                    setActiveConfigIndex(snapshot.activeIndex);
+                  }
+                  setEditMode(false);
+                  setPendingCancelEdit(false);
+                  setPickerCategoryUid(null);
+                  setPendingRemoveIndex(null);
+                  setCategorySettingsUid(null);
+                  setPendingCategoryDeleteUid(null);
+                }}
+                className="rounded-full bg-[color:var(--ember)] px-4 py-2 text-white shadow-[0_0_25px_rgba(231,91,58,0.45)]"
+              >
+                {t.cancelChanges}
               </button>
             </div>
           </div>
