@@ -1,10 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useRef, useState, useEffect } from "react";
+import { useMemo, useRef, useState, useEffect, type FormEvent } from "react";
 import heroData from "@/data/dota2_heroes.json";
 import heroAliases from "@/data/hero_aliases.json";
 import defaultGrid from "@/data/hero_grid_config.json";
+import {
+  getAuthToken,
+  loginUser,
+  registerUser,
+  setAuthToken as persistAuthToken,
+  getDefaultGrid,
+  getUserGrids,
+  createGrid,
+} from "@/lib/api";
 
 type Hero = {
   id: number;
@@ -102,7 +111,7 @@ const translations = {
     name: "Name",
     addCategory: "+ Add Category",
     currentMeta: "Current Meta 7.40b",
-    metaHint: "10 random heroes per role (temporary list)",
+    metaHint: "Fixed meta list (temporary).",
     roleCarry: "Carry",
     roleMid: "Mid",
     roleOfflane: "Offlane",
@@ -130,6 +139,27 @@ const translations = {
     cancelChangesTitle: "Cancel changes?",
     stay: "Stay",
     cancelChanges: "Discard",
+    authRequired: "Authentication required.",
+    authMissingFields: "Email and password are required.",
+    authFailed: "Auth failed.",
+    savedLocal: "Saved locally.",
+    savedLocalAndServer: "Saved locally and to server.",
+    saving: "Saving...",
+    saveFailed: "Failed to save grid.",
+    loggedIn: "Logged in.",
+    registeredAndLoggedIn: "Registered and logged in.",
+    loggedOut: "Logged out.",
+    defaultGridInvalid: "Default grid data has an unexpected format.",
+    defaultGridLoadFail: "Failed to load default grid.",
+    savedGridInvalid: "Saved grid data has an unexpected format.",
+    userGridsLoadFail: "Failed to load user grids.",
+    defaultGridNoSaved: "Loaded default grid (no saved grid found).",
+    loadedServerGrid: "Loaded grid from server.",
+    keptLocalGrid: "Kept local grid.",
+    shareWarning:
+      "When you click Save, your grid may be shared to help other players.",
+    serverGridPrompt:
+      "A saved grid exists on the server. Load it? If you keep the local grid and save later, it will replace the server grid.",
   },
   ru: {
     appKicker: "Dota 2 Grid Workshop",
@@ -147,12 +177,12 @@ const translations = {
     name: "Имя",
     addCategory: "+ Добавить категорию",
     currentMeta: "Текущая мета 7.40b",
-    metaHint: "10 случайных героев на роль (временный список)",
+    metaHint: "Фиксированный список меты (временно).",
     roleCarry: "Керри",
     roleMid: "Мид",
     roleOfflane: "Оффлейн",
-    roleSoftSupport: "Саппорт 4",
-    roleHardSupport: "Саппорт 5",
+    roleSoftSupport: "Частичная поддержка",
+    roleHardSupport: "Полная поддержка",
     noLayouts: "Лейауты не загружены.",
     importSuccess: "Лейаут импортирован.",
     importFail: "Не удалось импортировать JSON. Проверь формат лейаута.",
@@ -175,29 +205,36 @@ const translations = {
     cancelChangesTitle: "Отменить изменения?",
     stay: "Остаться",
     cancelChanges: "Отменить",
+    authRequired: "Требуется авторизация.",
+    authMissingFields: "Нужны email и пароль.",
+    authFailed: "Ошибка авторизации.",
+    savedLocal: "Сохранено локально.",
+    savedLocalAndServer: "Сохранено локально и на сервере.",
+    saving: "Сохранение...",
+    saveFailed: "Не удалось сохранить грид.",
+    loggedIn: "Вход выполнен.",
+    registeredAndLoggedIn: "Регистрация и вход выполнены.",
+    loggedOut: "Вы вышли из аккаунта.",
+    defaultGridInvalid: "Неверный формат дефолтного грида.",
+    defaultGridLoadFail: "Не удалось загрузить дефолтный грид.",
+    savedGridInvalid: "Неверный формат сохранённого грида.",
+    userGridsLoadFail: "Не удалось загрузить гриды пользователя.",
+    defaultGridNoSaved: "Загружен дефолтный грид (сохранений нет).",
+    loadedServerGrid: "Загружен грид с сервера.",
+    keptLocalGrid: "Оставлен локальный грид.",
+    shareWarning:
+      "Нажимая «Сохранить», вы соглашаетесь, что ваш грид может быть показан другим игрокам.",
+    serverGridPrompt:
+      "На сервере есть сохранённый грид. Загрузить его? Если оставить локальный и потом сохранить, он заменит грид на сервере.",
   },
 } as const;
 
-const seededRandom = (seed: string) => {
-  let hash = 0;
-  for (let i = 0; i < seed.length; i += 1) {
-    hash = (hash << 5) - hash + seed.charCodeAt(i);
-    hash |= 0;
-  }
-  return () => {
-    hash = (hash * 1664525 + 1013904223) | 0;
-    return ((hash >>> 0) % 1000) / 1000;
-  };
-};
-
-const shuffleWithSeed = <T,>(items: T[], seed: string) => {
-  const rng = seededRandom(seed);
-  const copy = [...items];
-  for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(rng() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
+const META_ROLE_IDS = {
+  carry: [67, 56, 6, 81, 54, 12, 42, 1, 11, 48],
+  mid: [74, 59, 106, 36, 39, 76, 47, 13, 34, 25],
+  offlane: [104, 14, 97, 28, 2, 29, 96, 98, 129, 60],
+  softSupport: [14, 40, 101, 71, 22, 155, 26, 64, 86, 105],
+  hardSupport: [31, 40, 27, 30, 68, 87, 14, 84, 37, 5],
 };
 
 const computeLayout = (
@@ -313,6 +350,13 @@ export default function Home() {
   >(null);
   const [pendingCancelEdit, setPendingCancelEdit] = useState(false);
   const [language, setLanguage] = useState<Language>("ru");
+  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [authEmail, setAuthEmail] = useState("");
+  const [authPassword, setAuthPassword] = useState("");
+  const [authMode, setAuthMode] = useState<"login" | "register">("login");
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [saveLoading, setSaveLoading] = useState(false);
   const t = translations[language];
   const editSnapshotRef = useRef<{
     version: number;
@@ -359,6 +403,118 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    setAuthToken(getAuthToken());
+  }, []);
+
+  useEffect(() => {
+    if (authToken) return;
+    if (
+      typeof window !== "undefined" &&
+      window.localStorage.getItem("dota2-grid-layouts")
+    ) {
+      return;
+    }
+    let cancelled = false;
+    const loadDefaultGrid = async () => {
+      try {
+        const record = await getDefaultGrid();
+        if (cancelled) return;
+        const data = record.data as GridConfig;
+        if (!data?.configs || !Array.isArray(data.configs)) {
+          setStatus(t.defaultGridInvalid);
+          return;
+        }
+        setGridVersion(data.version ?? 3);
+        setConfigs(withCategoryUids(data.configs));
+        setActiveConfigIndex(0);
+        setEditMode(false);
+      } catch (error) {
+        if (!cancelled) {
+          setStatus(
+            error instanceof Error
+              ? error.message
+              : t.defaultGridLoadFail
+          );
+        }
+      }
+    };
+    loadDefaultGrid();
+    return () => {
+      cancelled = true;
+    };
+  }, [authToken]);
+
+  useEffect(() => {
+    if (!authToken) return;
+    let cancelled = false;
+    const loadUserGrid = async () => {
+      try {
+        const grids = await getUserGrids();
+        if (cancelled) return;
+        if (!grids.length) {
+          const record = await getDefaultGrid();
+          if (cancelled) return;
+          const data = record.data as GridConfig;
+          if (data?.configs && Array.isArray(data.configs)) {
+            setGridVersion(data.version ?? 3);
+            setConfigs(withCategoryUids(data.configs));
+            setActiveConfigIndex(0);
+            setEditMode(false);
+            setStatus(t.defaultGridNoSaved);
+          }
+          return;
+        }
+        const latest = grids
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          )[0];
+        const hasLocal =
+          typeof window !== "undefined" &&
+          window.localStorage.getItem("dota2-grid-layouts");
+        if (hasLocal) {
+          const useServer = window.confirm(t.serverGridPrompt);
+          if (!useServer) {
+            setStatus(t.keptLocalGrid);
+            return;
+          }
+        }
+        const data = latest.data as GridConfig;
+        if (!data?.configs || !Array.isArray(data.configs)) {
+          setStatus(t.savedGridInvalid);
+          return;
+        }
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem(
+            "dota2-grid-layouts",
+            JSON.stringify({
+              version: data.version ?? 3,
+              configs: data.configs,
+            })
+          );
+        }
+        setGridVersion(data.version ?? 3);
+        setConfigs(withCategoryUids(data.configs));
+        setActiveConfigIndex(0);
+        setEditMode(false);
+        setStatus(t.loadedServerGrid);
+      } catch (error) {
+        if (!cancelled) {
+          setStatus(
+            error instanceof Error ? error.message : t.userGridsLoadFail
+          );
+        }
+      }
+    };
+    loadUserGrid();
+    return () => {
+      cancelled = true;
+    };
+  }, [authToken]);
+
+  useEffect(() => {
     if (typeof window === "undefined") return;
     window.localStorage.setItem(
       "dota2-grid-active-layout",
@@ -385,6 +541,7 @@ export default function Home() {
       };
     }
   }, [editMode, gridVersion, configs, activeConfigIndex]);
+
   const [resizeState, setResizeState] = useState<{
     uid: string;
     startX: number;
@@ -491,24 +648,20 @@ export default function Home() {
 
   const metaRoles = useMemo(() => {
     const roles = [
-      t.roleCarry,
-      t.roleMid,
-      t.roleOfflane,
-      t.roleSoftSupport,
-      t.roleHardSupport,
-    ];
-    const shuffled = shuffleWithSeed(heroes, "meta-740b");
-    const groups: { name: string; heroes: Hero[] }[] = [];
-    let index = 0;
-    roles.forEach((role) => {
-      groups.push({
-        name: role,
-        heroes: shuffled.slice(index, index + 10),
-      });
-      index += 10;
-    });
-    return groups;
-  }, [heroes, t]);
+      { key: "carry", name: t.roleCarry },
+      { key: "mid", name: t.roleMid },
+      { key: "offlane", name: t.roleOfflane },
+      { key: "softSupport", name: t.roleSoftSupport },
+      { key: "hardSupport", name: t.roleHardSupport },
+    ] as const;
+
+    return roles.map((role) => ({
+      name: role.name,
+      heroes: (META_ROLE_IDS[role.key] ?? [])
+        .map((heroId) => heroById.get(heroId))
+        .filter((hero): hero is Hero => Boolean(hero)),
+    }));
+  }, [heroById, t]);
   const pickerCategory = useMemo(
     () =>
       activeConfig?.categories.find(
@@ -664,6 +817,34 @@ export default function Home() {
     );
   };
 
+  const handleSave = async () => {
+    persistLayouts();
+    if (!authToken) {
+      setStatus(t.savedLocal);
+      setEditMode(false);
+      return;
+    }
+    setSaveLoading(true);
+    try {
+      const payload: GridConfig = {
+        version: gridVersion,
+        configs: stripUids(configs),
+      };
+      await createGrid({
+        title: activeConfig.config_name || "Hero Grid",
+        data: payload,
+      });
+      setStatus(t.savedLocalAndServer);
+      setEditMode(false);
+    } catch (error) {
+      setStatus(
+        error instanceof Error ? error.message : t.saveFailed
+      );
+    } finally {
+      setSaveLoading(false);
+    }
+  };
+
   const updateActiveConfig = (updater: (config: ConfigWithUid) => ConfigWithUid) => {
     setConfigs((prev) =>
       prev.map((config, index) =>
@@ -817,6 +998,44 @@ export default function Home() {
     }));
   };
 
+  const handleAuthSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setAuthLoading(true);
+    setAuthError(null);
+    try {
+      const payload = { email: authEmail.trim(), password: authPassword };
+      if (!payload.email || !payload.password) {
+        setAuthError(t.authMissingFields);
+        return;
+      }
+      if (authMode === "register") {
+        await registerUser(payload);
+      }
+      const token = await loginUser(payload);
+      setAuthToken(token);
+      setAuthPassword("");
+      setStatus(
+        authMode === "register" ? t.registeredAndLoggedIn : t.loggedIn
+      );
+    } catch (error) {
+      setAuthError(error instanceof Error ? error.message : t.authFailed);
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleLogout = () => {
+    persistAuthToken(null);
+    setAuthToken(null);
+    setEditMode(false);
+    setAuthError(null);
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem("dota2-grid-layouts");
+      window.localStorage.removeItem("dota2-grid-active-layout");
+    }
+    setStatus(t.loggedOut);
+  };
+
   if (!activeConfig) {
     return (
       <div className="min-h-screen px-6 py-16 text-center text-sm text-[color:var(--mist)]">
@@ -913,12 +1132,19 @@ export default function Home() {
             </label>
             <div className="ml-auto flex items-end gap-3">
               {editMode ? (
-                <button
-                  onClick={addCategory}
-                  className="h-[50px] w-[200px] rounded-full border border-dashed border-[color:var(--faint)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
-                >
-                  {t.addCategory}
-                </button>
+                <div className="flex flex-col items-end gap-2">
+                  <button
+                    onClick={addCategory}
+                    className="h-[50px] w-[200px] rounded-full border border-dashed border-[color:var(--faint)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
+                  >
+                    {t.addCategory}
+                  </button>
+                  {authToken ? (
+                    <p className="max-w-[260px] text-right text-[10px] text-[color:var(--mist)]">
+                      {t.shareWarning}
+                    </p>
+                  ) : null}
+                </div>
               ) : null}
               {editMode ? (
                 <button
@@ -931,25 +1157,84 @@ export default function Home() {
               <button
                 onClick={() => {
                   if (editMode) {
-                    persistLayouts();
-                    setEditMode(false);
+                    void handleSave();
                     return;
                   }
                   setEditMode(true);
                 }}
+                disabled={saveLoading}
                 className={`h-[50px] w-[200px] rounded-full px-4 py-2 uppercase tracking-[0.2em] text-white shadow-[0_0_25px_rgba(0,0,0,0.25)] transition hover:-translate-y-0.5 ${
                   editMode
                     ? "bg-emerald-500/90"
                     : "bg-[color:var(--ember)]"
-                }`}
+                } ${saveLoading ? "cursor-not-allowed opacity-70" : ""}`}
               >
-                {editMode ? t.save : t.edit}
+                {editMode ? (saveLoading ? t.saving : t.save) : t.edit}
               </button>
             </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-3 text-xs">
+            {authToken ? (
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="uppercase tracking-[0.2em] text-[color:var(--mist)]">
+                  Authenticated
+                </span>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="rounded-full border border-[color:var(--faint)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <form
+                onSubmit={handleAuthSubmit}
+                className="flex flex-wrap items-center gap-2"
+              >
+                <input
+                  type="email"
+                  value={authEmail}
+                  onChange={(event) => setAuthEmail(event.target.value)}
+                  placeholder="Email"
+                  className="rounded-full border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 text-white"
+                />
+                <input
+                  type="password"
+                  value={authPassword}
+                  onChange={(event) => setAuthPassword(event.target.value)}
+                  placeholder="Password"
+                  className="rounded-full border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 text-white"
+                />
+                <button
+                  type="submit"
+                  disabled={authLoading}
+                  className="rounded-full bg-[color:var(--ember)] px-4 py-2 uppercase tracking-[0.2em] text-white shadow-[0_0_25px_rgba(231,91,58,0.35)] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {authMode === "register" ? "Register" : "Login"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setAuthMode((mode) =>
+                      mode === "register" ? "login" : "register"
+                    )
+                  }
+                  className="rounded-full border border-[color:var(--faint)] px-3 py-2 uppercase tracking-[0.2em] text-[10px] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
+                >
+                  {authMode === "register" ? "Have account?" : "Need account?"}
+                </button>
+              </form>
+            )}
           </div>
           {status ? (
             <div className="rounded-2xl border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 text-xs text-[color:var(--mist)]">
               {status}
+            </div>
+          ) : null}
+          {authError ? (
+            <div className="rounded-2xl border border-red-500/40 bg-red-500/10 px-4 py-2 text-xs text-red-200">
+              {authError}
             </div>
           ) : null}
           <input
