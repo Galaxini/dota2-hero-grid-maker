@@ -94,6 +94,13 @@ const estimateCategorySize = (heroCount: number) => {
 const normalizeQuery = (value: string) =>
   value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
+const insertHeroAt = (ids: number[], heroId: number, index: number) => {
+  const next = ids.filter((id) => id !== heroId);
+  const clampedIndex = Math.max(0, Math.min(index, next.length));
+  next.splice(clampedIndex, 0, heroId);
+  return next;
+};
+
 const translations = {
   en: {
     appKicker: "Dota 2 Grid Workshop",
@@ -336,6 +343,11 @@ export default function Home() {
   const [activeConfigIndex, setActiveConfigIndex] = useState(0);
   const [status, setStatus] = useState<string | null>(null);
   const [dragOverUid, setDragOverUid] = useState<string | null>(null);
+  const [dragOverHero, setDragOverHero] = useState<{
+    uid: string;
+    index: number;
+    position: "before" | "after";
+  } | null>(null);
   const [pickerCategoryUid, setPickerCategoryUid] = useState<string | null>(null);
   const [pickerQuery, setPickerQuery] = useState("");
   const [editMode, setEditMode] = useState(false);
@@ -451,7 +463,14 @@ export default function Home() {
       try {
         const grids = await getUserGrids();
         if (cancelled) return;
+        const hasLocal =
+          typeof window !== "undefined" &&
+          window.localStorage.getItem("dota2-grid-layouts");
         if (!grids.length) {
+          if (hasLocal) {
+            setStatus(t.keptLocalGrid);
+            return;
+          }
           const record = await getDefaultGrid();
           if (cancelled) return;
           const data = record.data as GridConfig;
@@ -471,9 +490,6 @@ export default function Home() {
               new Date(b.created_at).getTime() -
               new Date(a.created_at).getTime()
           )[0];
-        const hasLocal =
-          typeof window !== "undefined" &&
-          window.localStorage.getItem("dota2-grid-layouts");
         if (hasLocal) {
           const useServer = window.confirm(t.serverGridPrompt);
           if (!useServer) {
@@ -853,6 +869,35 @@ export default function Home() {
     );
   };
 
+  const computeInsertIndex = (
+    event: React.DragEvent,
+    heroCount: number,
+    columns: number,
+    heroWidthPx: number,
+    heroHeightPx: number,
+    gapPx: number
+  ) => {
+    const rect = (event.currentTarget as HTMLDivElement).getBoundingClientRect();
+    const cellWidth = heroWidthPx + gapPx;
+    const cellHeight = heroHeightPx + gapPx;
+    const rawX = event.clientX - rect.left - gapPx;
+    const rawY = event.clientY - rect.top - gapPx;
+
+    const safeX = Math.max(0, rawX);
+    const safeY = Math.max(0, rawY);
+
+    let col = Math.floor(safeX / cellWidth);
+    let row = Math.floor(safeY / cellHeight);
+    col = Math.max(0, Math.min(columns - 1, col));
+    row = Math.max(0, row);
+
+    const localX = safeX - col * cellWidth;
+    const offset = localX > heroWidthPx / 2 ? 1 : 0;
+    const baseIndex = row * columns + col;
+    const insertIndex = baseIndex + offset;
+    return Math.max(0, Math.min(heroCount, insertIndex));
+  };
+
   const handleDrop = (event: React.DragEvent, targetUid: string) => {
     event.preventDefault();
     const raw = event.dataTransfer.getData("application/json");
@@ -861,27 +906,30 @@ export default function Home() {
       heroId: number;
       sourceUid?: string | null;
     };
-    if (data.sourceUid && data.sourceUid === targetUid) {
-      setDragOverUid(null);
-      return;
-    }
     const isCopy = event.altKey || !data.sourceUid;
+    const isSameCategory = data.sourceUid === targetUid;
 
     updateActiveConfig((config) => {
+      let inserted = false;
       const categories = config.categories.map((category) => {
         if (category.uid === targetUid) {
-          if (category.hero_ids.includes(data.heroId)) {
+          if (isCopy && category.hero_ids.includes(data.heroId)) {
             return category;
           }
+          inserted = true;
           return {
             ...category,
-            hero_ids: [...category.hero_ids, data.heroId],
+            hero_ids: insertHeroAt(
+              category.hero_ids,
+              data.heroId,
+              category.hero_ids.length
+            ),
           };
         }
         return category;
       });
 
-      if (!isCopy && data.sourceUid) {
+      if (!isCopy && inserted && data.sourceUid && !isSameCategory) {
         return {
           ...config,
           categories: categories.map((category) =>
@@ -897,6 +945,67 @@ export default function Home() {
       return { ...config, categories };
     });
     setDragOverUid(null);
+    setDragOverHero(null);
+  };
+
+  const handleHeroDrop = (
+    event: React.DragEvent,
+    targetUid: string,
+    insertIndex: number
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const raw = event.dataTransfer.getData("application/json");
+    if (!raw) return;
+    const data = JSON.parse(raw) as {
+      heroId: number;
+      sourceUid?: string | null;
+    };
+    const isCopy = event.altKey || !data.sourceUid;
+    const isSameCategory = data.sourceUid === targetUid;
+
+    updateActiveConfig((config) => {
+      let inserted = false;
+      const categories = config.categories.map((category) => {
+        if (category.uid !== targetUid) {
+          return category;
+        }
+        if (isCopy && category.hero_ids.includes(data.heroId)) {
+          return category;
+        }
+        const sourceIndex = category.hero_ids.indexOf(data.heroId);
+        const resolvedIndex =
+          isSameCategory && sourceIndex > -1 && sourceIndex < insertIndex
+            ? insertIndex - 1
+            : insertIndex;
+        inserted = true;
+        return {
+          ...category,
+          hero_ids: insertHeroAt(
+            category.hero_ids,
+            data.heroId,
+            resolvedIndex
+          ),
+        };
+      });
+
+      if (!isCopy && inserted && data.sourceUid && !isSameCategory) {
+        return {
+          ...config,
+          categories: categories.map((category) =>
+            category.uid === data.sourceUid
+              ? {
+                  ...category,
+                  hero_ids: category.hero_ids.filter((id) => id !== data.heroId),
+                }
+              : category
+          ),
+        };
+      }
+      return { ...config, categories };
+    });
+    setDragOverUid(null);
+    setDragOverHero(null);
   };
 
   const normalizeLayout = () => {
@@ -1334,6 +1443,9 @@ export default function Home() {
                       setDragOverUid((current) =>
                         current === category.uid ? null : current
                       );
+                      setDragOverHero((current) =>
+                        current && current.uid === category.uid ? null : current
+                      );
                     }}
                     onMouseDown={(event) => {
                       if (!editMode) return;
@@ -1377,6 +1489,42 @@ export default function Home() {
                     ) : null}
                     <div
                       className="grid"
+                      onDragOver={(event) => {
+                        if (!editMode) return;
+                        event.preventDefault();
+                        const index = computeInsertIndex(
+                          event,
+                          category.hero_ids.length,
+                          layout.columns,
+                          heroWidthPx,
+                          heroHeightPx,
+                          gapPx
+                        );
+                        setDragOverHero({
+                          uid: category.uid,
+                          index,
+                          position: "before",
+                        });
+                      }}
+                      onDragLeave={() => {
+                        if (!editMode) return;
+                        setDragOverHero((current) =>
+                          current && current.uid === category.uid ? null : current
+                        );
+                      }}
+                      onDrop={(event) => {
+                        if (!editMode) return;
+                        event.stopPropagation();
+                        const index = computeInsertIndex(
+                          event,
+                          category.hero_ids.length,
+                          layout.columns,
+                          heroWidthPx,
+                          heroHeightPx,
+                          gapPx
+                        );
+                        handleHeroDrop(event, category.uid, index);
+                      }}
                       style={{
                         gridTemplateColumns: `repeat(${layout.columns}, ${heroWidthPx}px)`,
                         gridAutoRows: `${heroHeightPx}px`,
@@ -1388,7 +1536,7 @@ export default function Home() {
                         paddingBottom: `${gapPx}px`,
                       }}
                     >
-                      {category.hero_ids.map((heroId) => {
+                      {category.hero_ids.map((heroId, heroIndex) => {
                         const hero = heroById.get(heroId);
                         if (!hero) return null;
                         return (
@@ -1396,12 +1544,75 @@ export default function Home() {
                             key={`${category.uid}-${heroId}`}
                             className="group relative flex items-center justify-center"
                             style={{ width: heroWidthPx, height: heroHeightPx }}
+                            onDragOver={(event) => {
+                              if (!editMode) return;
+                              event.preventDefault();
+                              event.stopPropagation();
+                              const rect = (
+                                event.currentTarget as HTMLDivElement
+                              ).getBoundingClientRect();
+                              const isRightHalf =
+                                event.clientX - rect.left > rect.width / 2;
+                              setDragOverHero({
+                                uid: category.uid,
+                                index: heroIndex + (isRightHalf ? 1 : 0),
+                                position: isRightHalf ? "after" : "before",
+                              });
+                            }}
+                            onDragEnter={() => {
+                              if (!editMode) return;
+                              setDragOverHero({
+                                uid: category.uid,
+                                index: heroIndex,
+                                position: "before",
+                              });
+                            }}
+                            onDragLeave={() => {
+                              if (!editMode) return;
+                              setDragOverHero((current) =>
+                                current &&
+                                current.uid === category.uid &&
+                                (current.index === heroIndex ||
+                                  current.index === heroIndex + 1)
+                                  ? null
+                                  : current
+                              );
+                            }}
+                            onDrop={(event) => {
+                              if (!editMode) return;
+                              event.stopPropagation();
+                              const rect = (
+                                event.currentTarget as HTMLDivElement
+                              ).getBoundingClientRect();
+                              const isRightHalf =
+                                event.clientX - rect.left > rect.width / 2;
+                              handleHeroDrop(
+                                event,
+                                category.uid,
+                                heroIndex + (isRightHalf ? 1 : 0)
+                              );
+                            }}
                           >
+                            {dragOverHero &&
+                            dragOverHero.uid === category.uid &&
+                            dragOverHero.index === heroIndex ? (
+                              <span className="pointer-events-none absolute inset-y-0 left-0 w-1/2 rounded-l-md border-l-2 border-[color:var(--gold)] bg-[color:var(--gold)]/45 shadow-[0_0_12px_rgba(243,187,87,0.45)]" />
+                            ) : null}
+                            {dragOverHero &&
+                            dragOverHero.uid === category.uid &&
+                            dragOverHero.index === heroIndex + 1 ? (
+                              <span className="pointer-events-none absolute inset-y-0 right-0 w-1/2 rounded-r-md border-r-2 border-[color:var(--gold)] bg-[color:var(--gold)]/45 shadow-[0_0_12px_rgba(243,187,87,0.45)]" />
+                            ) : null}
                             <button
                               data-no-drag={!editMode}
                               draggable
                               onDragStart={(event) => {
                                 if (!editMode) return;
+                                setDragOverHero({
+                                  uid: category.uid,
+                                  index: heroIndex,
+                                  position: "before",
+                                });
                                 event.dataTransfer.setData(
                                   "application/json",
                                   JSON.stringify({
@@ -1410,6 +1621,9 @@ export default function Home() {
                                   })
                                 );
                                 event.dataTransfer.effectAllowed = "copyMove";
+                              }}
+                              onDragEnd={() => {
+                                setDragOverHero(null);
                               }}
                               className="relative flex items-center justify-center rounded-md border border-transparent transition hover:border-[color:var(--gold)]"
                               style={{ width: heroWidthPx, height: heroHeightPx }}
