@@ -1239,48 +1239,7 @@ export default function Home() {
                 className="rounded-full border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 text-white"
               />
             </label>
-            <div className="ml-auto flex items-end gap-3">
-              {editMode ? (
-                <div className="flex flex-col items-end gap-2">
-                  <button
-                    onClick={addCategory}
-                    className="h-[50px] w-[200px] rounded-full border border-dashed border-[color:var(--faint)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
-                  >
-                    {t.addCategory}
-                  </button>
-                  {authToken ? (
-                    <p className="max-w-[260px] text-right text-[10px] text-[color:var(--mist)]">
-                      {t.shareWarning}
-                    </p>
-                  ) : null}
-                </div>
-              ) : null}
-              {editMode ? (
-                <button
-                  onClick={() => setPendingCancelEdit(true)}
-                  className="h-[50px] w-[200px] rounded-full border border-[color:var(--faint)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
-                >
-                  {t.cancel}
-                </button>
-              ) : null}
-              <button
-                onClick={() => {
-                  if (editMode) {
-                    void handleSave();
-                    return;
-                  }
-                  setEditMode(true);
-                }}
-                disabled={saveLoading}
-                className={`h-[50px] w-[200px] rounded-full px-4 py-2 uppercase tracking-[0.2em] text-white shadow-[0_0_25px_rgba(0,0,0,0.25)] transition hover:-translate-y-0.5 ${
-                  editMode
-                    ? "bg-emerald-500/90"
-                    : "bg-[color:var(--ember)]"
-                } ${saveLoading ? "cursor-not-allowed opacity-70" : ""}`}
-              >
-                {editMode ? (saveLoading ? t.saving : t.save) : t.edit}
-              </button>
-            </div>
+            <div className="ml-auto" />
           </div>
           <div className="flex flex-wrap items-center gap-3 text-xs">
             {authToken ? (
@@ -1693,6 +1652,48 @@ export default function Home() {
             </div>
           </section>
         </div>
+      </div>
+      <div className="pointer-events-none fixed bottom-12 right-12 z-40 flex flex-col items-end gap-3">
+        {editMode ? (
+          <div className="pointer-events-auto flex flex-col items-end gap-2">
+            <button
+              onClick={addCategory}
+              className="h-[80px] w-[320px] rounded-full border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-6 py-3 text-base uppercase tracking-[0.2em] text-white shadow-[0_0_20px_rgba(0,0,0,0.25)] transition hover:border-[color:var(--gold)]"
+            >
+              {t.addCategory}
+            </button>
+            {authToken ? (
+              <p className="max-w-[260px] text-right text-[10px] text-[color:var(--mist)]">
+                {t.shareWarning}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+        {editMode ? (
+          <button
+            onClick={() => setPendingCancelEdit(true)}
+            className="pointer-events-auto h-[80px] w-[320px] rounded-full border border-[color:var(--faint)] bg-[color:var(--panel)] px-6 py-3 text-base uppercase tracking-[0.2em] text-[color:var(--mist)] shadow-[0_0_20px_rgba(0,0,0,0.25)] transition hover:border-[color:var(--gold)] hover:text-white"
+          >
+            {t.cancel}
+          </button>
+        ) : null}
+        <button
+          onClick={() => {
+            if (editMode) {
+              void handleSave();
+              return;
+            }
+            setEditMode(true);
+          }}
+          disabled={saveLoading}
+          className={`pointer-events-auto h-[80px] w-[320px] rounded-full px-6 py-3 text-base uppercase tracking-[0.2em] text-white shadow-[0_0_25px_rgba(0,0,0,0.25)] transition hover:-translate-y-0.5 ${
+            editMode
+              ? "bg-emerald-500/90"
+              : "bg-[color:var(--ember)]"
+          } ${saveLoading ? "cursor-not-allowed opacity-70" : ""}`}
+        >
+          {editMode ? (saveLoading ? t.saving : t.save) : t.edit}
+        </button>
       </div>
       {pendingRemoveIndex !== null ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
