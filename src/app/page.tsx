@@ -1802,7 +1802,7 @@ export default function Home() {
           <div className="pointer-events-auto flex flex-col items-end gap-2">
             <button
               onClick={addCategory}
-              className="h-[80px] w-[320px] rounded-full border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-6 py-3 text-base uppercase tracking-[0.2em] text-white shadow-[0_0_20px_rgba(0,0,0,0.25)] transition hover:border-[color:var(--gold)]"
+              className="h-[50px] w-[200px] rounded-full border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 text-xs uppercase tracking-[0.2em] text-white shadow-[0_0_20px_rgba(0,0,0,0.25)] transition hover:border-[color:var(--gold)]"
             >
               {t.addCategory}
             </button>
@@ -1816,7 +1816,7 @@ export default function Home() {
         {editMode ? (
           <button
             onClick={() => setPendingCancelEdit(true)}
-            className="pointer-events-auto h-[80px] w-[320px] rounded-full border border-[color:var(--faint)] bg-[color:var(--panel)] px-6 py-3 text-base uppercase tracking-[0.2em] text-[color:var(--mist)] shadow-[0_0_20px_rgba(0,0,0,0.25)] transition hover:border-[color:var(--gold)] hover:text-white"
+            className="pointer-events-auto h-[50px] w-[200px] rounded-full border border-[color:var(--faint)] bg-[color:var(--panel)] px-4 py-2 text-xs uppercase tracking-[0.2em] text-[color:var(--mist)] shadow-[0_0_20px_rgba(0,0,0,0.25)] transition hover:border-[color:var(--gold)] hover:text-white"
           >
             {t.cancel}
           </button>
@@ -1830,7 +1830,7 @@ export default function Home() {
             setEditMode(true);
           }}
           disabled={saveLoading}
-          className={`pointer-events-auto h-[80px] w-[320px] rounded-full px-6 py-3 text-base uppercase tracking-[0.2em] text-white shadow-[0_0_25px_rgba(0,0,0,0.25)] transition hover:-translate-y-0.5 ${
+          className={`pointer-events-auto h-[50px] w-[200px] rounded-full px-4 py-2 text-xs uppercase tracking-[0.2em] text-white shadow-[0_0_25px_rgba(0,0,0,0.25)] transition hover:-translate-y-0.5 ${
             editMode
               ? "bg-emerald-500/90"
               : "bg-[color:var(--ember)]"
