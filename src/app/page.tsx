@@ -146,6 +146,13 @@ const translations = {
     cancelChangesTitle: "Cancel changes?",
     stay: "Stay",
     cancelChanges: "Discard",
+    logoutTitle: "Log out?",
+    logoutBody: "You will return to the default grid after logging out.",
+    logoutConfirm: "Log out",
+    hiddenHeroes: "Hidden: {{count}} heroes",
+    hiddenHeroesTitle: "Hidden heroes",
+    showHidden: "Show hidden",
+    hideHidden: "Hide list",
     authRequired: "Authentication required.",
     authMissingFields: "Email and password are required.",
     authFailed: "Auth failed.",
@@ -212,6 +219,13 @@ const translations = {
     cancelChangesTitle: "Отменить изменения?",
     stay: "Остаться",
     cancelChanges: "Отменить",
+    logoutTitle: "Выйти из аккаунта?",
+    logoutBody: "После выхода вы вернётесь к дефолтному гриду.",
+    logoutConfirm: "Выйти",
+    hiddenHeroes: "Скрыто: {{count}} героев",
+    hiddenHeroesTitle: "Скрытые герои",
+    showHidden: "Показать",
+    hideHidden: "Скрыть список",
     authRequired: "Требуется авторизация.",
     authMissingFields: "Нужны email и пароль.",
     authFailed: "Ошибка авторизации.",
@@ -361,6 +375,8 @@ export default function Home() {
     string | null
   >(null);
   const [pendingCancelEdit, setPendingCancelEdit] = useState(false);
+  const [pendingLogout, setPendingLogout] = useState(false);
+  const [showHiddenHeroes, setShowHiddenHeroes] = useState(false);
   const [language, setLanguage] = useState<Language>("ru");
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [authEmail, setAuthEmail] = useState("");
@@ -375,6 +391,12 @@ export default function Home() {
     configs: ConfigWithUid[];
     activeIndex: number;
   } | null>(null);
+  const dragSourceRef = useRef<{
+    uid: string;
+    heroId: number;
+    isCopy: boolean;
+  } | null>(null);
+  const dragDropHandledRef = useRef(false);
 
   useEffect(() => {
     const saved =
@@ -609,6 +631,18 @@ export default function Home() {
     heroes.forEach((hero) => map.set(hero.id, hero));
     return map;
   }, []);
+
+  const hiddenHeroIds = useMemo(() => {
+    const assigned = new Set<number>();
+    configs.forEach((config) => {
+      config.categories.forEach((category) => {
+        category.hero_ids.forEach((id) => assigned.add(id));
+      });
+    });
+    return heroes
+      .map((hero) => hero.id)
+      .filter((id) => !assigned.has(id));
+  }, [configs]);
 
   const aliasById = useMemo(() => {
     const map = new Map<number, string[]>();
@@ -909,6 +943,7 @@ export default function Home() {
     const isCopy = event.altKey || !data.sourceUid;
     const isSameCategory = data.sourceUid === targetUid;
 
+    dragDropHandledRef.current = true;
     updateActiveConfig((config) => {
       let inserted = false;
       const categories = config.categories.map((category) => {
@@ -964,6 +999,7 @@ export default function Home() {
     const isCopy = event.altKey || !data.sourceUid;
     const isSameCategory = data.sourceUid === targetUid;
 
+    dragDropHandledRef.current = true;
     updateActiveConfig((config) => {
       let inserted = false;
       const categories = config.categories.map((category) => {
@@ -1260,7 +1296,7 @@ export default function Home() {
                 </span>
                 <button
                   type="button"
-                  onClick={handleLogout}
+                  onClick={() => setPendingLogout(true)}
                   className="rounded-full border border-[color:var(--faint)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
                 >
                   Logout
@@ -1347,13 +1383,28 @@ export default function Home() {
                         className="group relative rounded-xl border border-[color:var(--faint)] bg-black/30 p-1"
                         title={hero.name}
                       >
-                        <Image
-                          src={hero.icon}
-                          alt={hero.name}
-                          width={POOL_ICON_SIZE}
-                          height={POOL_ICON_SIZE}
-                          className="rounded-lg"
-                        />
+                        <button
+                          type="button"
+                          data-no-drag={!editMode}
+                          draggable={editMode}
+                          onDragStart={(event) => {
+                            if (!editMode) return;
+                            event.dataTransfer.setData(
+                              "application/json",
+                              JSON.stringify({ heroId: hero.id })
+                            );
+                            event.dataTransfer.effectAllowed = "copyMove";
+                          }}
+                          className="flex items-center justify-center rounded-lg transition hover:opacity-90"
+                        >
+                          <Image
+                            src={hero.icon}
+                            alt={hero.name}
+                            width={POOL_ICON_SIZE}
+                            height={POOL_ICON_SIZE}
+                            className="rounded-lg"
+                          />
+                        </button>
                         <span className="pointer-events-none absolute inset-x-1 bottom-1 rounded-md bg-black/70 px-1 text-[9px] text-white opacity-0 transition group-hover:opacity-100">
                           {hero.name}
                         </span>
@@ -1362,6 +1413,70 @@ export default function Home() {
                   </div>
                 </div>
               ))}
+              <div className="rounded-2xl border border-[color:var(--faint)] bg-[color:var(--panel-bright)]/70 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--mist)]">
+                    {t.hiddenHeroes.replace(
+                      "{{count}}",
+                      String(hiddenHeroIds.length)
+                    )}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setShowHiddenHeroes((prev) => !prev)}
+                    className="rounded-full border border-[color:var(--faint)] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
+                  >
+                    {showHiddenHeroes ? t.hideHidden : t.showHidden}
+                  </button>
+                </div>
+                {showHiddenHeroes ? (
+                  <div className="mt-3 space-y-2">
+                    <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-[color:var(--mist)]">
+                      <span>{t.hiddenHeroesTitle}</span>
+                      <span className="h-px flex-1 bg-[color:var(--faint)]" />
+                    </div>
+                    <div className="grid grid-cols-5 gap-2">
+                      {hiddenHeroIds.map((heroId) => {
+                        const hero = heroById.get(heroId);
+                        if (!hero) return null;
+                        return (
+                          <div
+                            key={`hidden-${hero.id}`}
+                            className="group relative rounded-xl border border-[color:var(--faint)] bg-black/30 p-1"
+                            title={hero.name}
+                          >
+                            <button
+                              type="button"
+                              data-no-drag={!editMode}
+                              draggable={editMode}
+                              onDragStart={(event) => {
+                                if (!editMode) return;
+                                event.dataTransfer.setData(
+                                  "application/json",
+                                  JSON.stringify({ heroId: hero.id })
+                                );
+                                event.dataTransfer.effectAllowed = "copyMove";
+                              }}
+                              className="flex items-center justify-center rounded-lg transition hover:opacity-90"
+                            >
+                              <Image
+                                src={hero.icon}
+                                alt={hero.name}
+                                width={POOL_ICON_SIZE}
+                                height={POOL_ICON_SIZE}
+                                className="rounded-lg"
+                              />
+                            </button>
+                            <span className="pointer-events-none absolute inset-x-1 bottom-1 rounded-md bg-black/70 px-1 text-[9px] text-white opacity-0 transition group-hover:opacity-100">
+                              {hero.name}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
             </div>
           </aside>
 
@@ -1579,6 +1694,12 @@ export default function Home() {
                               draggable
                               onDragStart={(event) => {
                                 if (!editMode) return;
+                                dragDropHandledRef.current = false;
+                                dragSourceRef.current = {
+                                  uid: category.uid,
+                                  heroId: hero.id,
+                                  isCopy: event.altKey,
+                                };
                                 setDragOverHero({
                                   uid: category.uid,
                                   index: heroIndex,
@@ -1595,6 +1716,17 @@ export default function Home() {
                               }}
                               onDragEnd={() => {
                                 setDragOverHero(null);
+                                const source = dragSourceRef.current;
+                                if (
+                                  editMode &&
+                                  source &&
+                                  !dragDropHandledRef.current &&
+                                  !source.isCopy
+                                ) {
+                                  removeHeroFromCategory(source.uid, source.heroId);
+                                }
+                                dragSourceRef.current = null;
+                                dragDropHandledRef.current = false;
                               }}
                               className="relative flex items-center justify-center rounded-md border border-transparent transition hover:border-[color:var(--gold)]"
                               style={{ width: heroWidthPx, height: heroHeightPx }}
@@ -1612,7 +1744,7 @@ export default function Home() {
                               <button
                                 data-no-drag
                                 onClick={() => removeHeroFromCategory(category.uid, heroId)}
-                                className="absolute -right-1 -top-1 hidden h-5 w-5 items-center justify-center rounded-full bg-black/70 text-[10px] text-white group-hover:flex"
+                                className="absolute right-0 top-0 hidden h-6 w-6 items-center justify-center rounded-full bg-black/70 text-[12px] text-white group-hover:flex"
                                 aria-label={`Remove ${hero.name}`}
                               >
                                 ×
@@ -1737,6 +1869,35 @@ export default function Home() {
                 className="rounded-full bg-[color:var(--ember)] px-4 py-2 text-white shadow-[0_0_25px_rgba(231,91,58,0.45)]"
               >
                 {t.delete}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {pendingLogout ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+          <div className="w-full max-w-md rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
+            <h2 className="text-lg font-semibold text-white">
+              {t.logoutTitle}
+            </h2>
+            <p className="mt-2 text-sm text-[color:var(--mist)]">
+              {t.logoutBody}
+            </p>
+            <div className="mt-6 flex items-center justify-end gap-3 text-xs uppercase tracking-[0.2em]">
+              <button
+                onClick={() => setPendingLogout(false)}
+                className="rounded-full border border-[color:var(--faint)] px-4 py-2 text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
+              >
+                {t.cancel}
+              </button>
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setPendingLogout(false);
+                }}
+                className="rounded-full bg-[color:var(--ember)] px-4 py-2 text-white shadow-[0_0_25px_rgba(231,91,58,0.45)]"
+              >
+                {t.logoutConfirm}
               </button>
             </div>
           </div>
