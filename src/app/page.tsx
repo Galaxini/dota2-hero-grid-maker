@@ -1554,8 +1554,8 @@ export default function Home() {
                       transformOrigin: "top left",
                     }}
                   >
-                    <div className="absolute -top-7 left-0 z-20 flex items-center gap-2 text-[10px] uppercase tracking-[0.35em] text-[color:var(--mist)]">
-                      <span className="text-[14px]">{category.category_name}</span>
+                    <div className="absolute -top-5 left-0 z-20 flex items-center gap-2 text-[9px] uppercase tracking-[0.3em] text-[color:var(--mist)]">
+                      <span className="text-[12px]">{category.category_name}</span>
                       {editMode ? (
                         <button
                           data-no-drag
