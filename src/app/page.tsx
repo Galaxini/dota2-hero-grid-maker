@@ -1031,13 +1031,14 @@ export default function Home() {
   };
 
   const addCategory = () => {
+    const newUid = makeUid();
     updateActiveConfig((config) => {
       const maxY = Math.max(
         ...config.categories.map((category) => category.y_position + category.height),
         0
       );
       const newCategory: CategoryWithUid = {
-        uid: makeUid(),
+        uid: newUid,
         category_name: t.newCategoryName,
         x_position: 0,
         y_position: maxY + 30,
@@ -1047,6 +1048,16 @@ export default function Home() {
       };
       return { ...config, categories: [...config.categories, newCategory] };
     });
+    if (typeof window !== "undefined") {
+      window.setTimeout(() => {
+        const element = document.querySelector(
+          `[data-category-uid="${newUid}"]`
+        );
+        if (element instanceof HTMLElement) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 0);
+    }
   };
 
   const createConfig = () => {
@@ -1385,6 +1396,7 @@ export default function Home() {
                 return (
                   <div
                     key={category.uid}
+                    data-category-uid={category.uid}
                     onDragOver={(event) => {
                       if (!editMode) return;
                       event.preventDefault();
