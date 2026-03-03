@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    unoptimized: true, // ← ВАЖНО
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -9,6 +9,15 @@ const nextConfig = {
         pathname: "/apps/dota2/images/**",
       },
     ],
+  },
+
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "http://dota_api:8080/:path*",
+      },
+    ];
   },
 };
 

@@ -1,0 +1,9 @@
+services:
+  frontend:
+    build: .
+    container_name: dota_frontend
+    restart: always
+    ports:
+      - "80:3000"
+    env_file:
+      - .env.production
