@@ -1,5 +1,5 @@
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 const TOKEN_STORAGE_KEY = "dota2-grid-auth-token";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";

@@ -49,3 +49,26 @@ body {
     transform: translateY(0px);
   }
 }
+
+@media (max-width: 768px) {
+  .layout-shell {
+    width: 100%;
+  }
+
+  .floating-controls {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .floating-controls button {
+    width: 160px;
+    height: 44px;
+    font-size: 10px;
+    padding: 6px 12px;
+  }
+
+  .floating-controls p {
+    max-width: 200px;
+    font-size: 9px;
+  }
+}

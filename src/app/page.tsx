@@ -68,12 +68,24 @@ const makeUid = () =>
     ? crypto.randomUUID()
     : `cat_${Math.random().toString(36).slice(2)}`;
 
+const makeStableUid = (configIndex: number, categoryIndex: number) =>
+  `cat_${configIndex}_${categoryIndex}`;
+
 const withCategoryUids = (configs: Config[]): ConfigWithUid[] =>
   configs.map((config) => ({
     ...config,
     categories: config.categories.map((category) => ({
       ...category,
       uid: makeUid(),
+    })),
+  }));
+
+const withCategoryUidsStable = (configs: Config[]): ConfigWithUid[] =>
+  configs.map((config, configIndex) => ({
+    ...config,
+    categories: config.categories.map((category, categoryIndex) => ({
+      ...category,
+      uid: makeStableUid(configIndex, categoryIndex),
     })),
   }));
 
@@ -351,8 +363,8 @@ const buildDefaultConfig = (heroesList: Hero[]): ConfigWithUid => {
 
 export default function Home() {
   const [gridVersion, setGridVersion] = useState<number>(seedGrid.version ?? 3);
-  const [configs, setConfigs] = useState<ConfigWithUid[]>(
-    withCategoryUids(seedGrid.configs ?? [])
+  const [configs, setConfigs] = useState<ConfigWithUid[]>(() =>
+    withCategoryUidsStable(seedGrid.configs ?? [])
   );
   const [activeConfigIndex, setActiveConfigIndex] = useState(0);
   const [status, setStatus] = useState<string | null>(null);
@@ -736,7 +748,9 @@ export default function Home() {
   }, [activeConfig]);
 
   const scale = canvasWidth
-    ? Math.min(2, canvasWidth / canvasBounds.width)
+    ? canvasWidth >= 650
+      ? Math.min(2, canvasWidth / canvasBounds.width)
+      : 1
     : 1;
   const safeScale = Number.isFinite(scale) && scale > 0 ? scale : 1;
 
@@ -1201,94 +1215,23 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen px-4 py-10 sm:px-6">
-      <div className="mx-auto flex w-[75%] max-w-none flex-col gap-8">
-        <header className="grid gap-6 rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)]/80 p-6 shadow-[0_25px_80px_rgba(0,0,0,0.35)] backdrop-blur">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="space-y-2">
-              <p className="text-xs uppercase tracking-[0.4em] text-[color:var(--gold)]">
-                {t.appKicker}
-              </p>
-              <h1 className="text-4xl font-[var(--font-display)] tracking-wide text-white">
-                {t.appTitle}
-              </h1>
-              <p className="max-w-xl text-sm text-[color:var(--mist)]">
-                {t.appSubtitle} {t.appHint}
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-3 text-xs">
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="rounded-full border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
-              >
-                {t.importJson}
-              </button>
-              <button
-                onClick={downloadConfig}
-                className="rounded-full bg-[color:var(--ember)] px-4 py-2 uppercase tracking-[0.2em] text-white shadow-[0_0_25px_rgba(231,91,58,0.45)] transition hover:-translate-y-0.5"
-              >
-                {t.exportJson}
-              </button>
-              <button
-                onClick={() =>
-                  setLanguage((current) => (current === "ru" ? "en" : "ru"))
-                }
-                className="rounded-full border border-[color:var(--faint)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
-              >
-                {language === "ru" ? "EN" : "RU"}
-              </button>
-            </div>
+    <div className="min-h-screen">
+      <nav className="sticky top-0 z-50 border-b border-[color:var(--faint)] bg-[color:var(--ink)]/80 backdrop-blur">
+        <div className="layout-shell mx-auto flex w-[75%] max-w-none flex-wrap items-center justify-between gap-4 px-4 py-3 sm:px-6">
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-semibold uppercase tracking-[0.3em] text-white">
+              {t.appTitle}
+            </span>
           </div>
-          <div className="flex flex-wrap items-center gap-4 text-xs text-[color:var(--mist)]">
-            <label className="flex items-center gap-3">
-              <span className="uppercase tracking-[0.2em]">{t.activeLayout}</span>
-              <select
-                value={activeConfigIndex}
-                onChange={(event) => {
-                  const value = event.target.value;
-                  if (value === "__new__") {
-                    createConfig();
-                    return;
-                  }
-                  setActiveConfigIndex(Number(value));
-                }}
-                className="rounded-full border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 text-white"
-              >
-                {configs.map((config, index) => (
-                  <option key={config.config_name + index} value={index}>
-                    {config.config_name}
-                  </option>
-                ))}
-                <option value="__new__">{t.newLayout}</option>
-              </select>
-            </label>
+          <div className="flex flex-wrap items-center justify-end gap-3 text-xs">
             <button
-              onClick={() => {
-                if (configs.length <= 1) return;
-                setPendingRemoveIndex(activeConfigIndex);
-              }}
-              disabled={configs.length <= 1}
-              className="rounded-full border border-red-500/60 px-4 py-2 uppercase tracking-[0.2em] text-red-200 transition hover:border-red-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-red-500/60 disabled:hover:text-red-200"
+              onClick={() =>
+                setLanguage((current) => (current === "ru" ? "en" : "ru"))
+              }
+              className="rounded-full border border-[color:var(--faint)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
             >
-              {t.deleteLayout}
+              {language === "ru" ? "EN" : "RU"}
             </button>
-            <label className="flex items-center gap-3">
-              <span className="uppercase tracking-[0.2em]">{t.name}</span>
-              <input
-                value={activeConfig.config_name}
-                onChange={(event) => {
-                  const value = event.target.value;
-                  updateActiveConfig((config) => ({
-                    ...config,
-                    config_name: value,
-                  }));
-                }}
-                className="rounded-full border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 text-white"
-              />
-            </label>
-            <div className="ml-auto" />
-          </div>
-          <div className="flex flex-wrap items-center gap-3 text-xs">
             {authToken ? (
               <div className="flex flex-wrap items-center gap-3">
                 <span className="uppercase tracking-[0.2em] text-[color:var(--mist)]">
@@ -1341,6 +1284,86 @@ export default function Home() {
                 </button>
               </form>
             )}
+          </div>
+        </div>
+      </nav>
+      <div className="layout-shell mx-auto flex w-[75%] max-w-none flex-col gap-8 px-4 py-10 sm:px-6">
+        <header className="grid gap-6 rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)]/80 p-6 shadow-[0_25px_80px_rgba(0,0,0,0.35)] backdrop-blur">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="space-y-2">
+              <p className="text-xs uppercase tracking-[0.4em] text-[color:var(--gold)]">
+                {t.appKicker}
+              </p>
+              <h1 className="text-4xl font-[var(--font-display)] tracking-wide text-white">
+                {t.appTitle}
+              </h1>
+              <p className="max-w-xl text-sm text-[color:var(--mist)]">
+                {t.appSubtitle} {t.appHint}
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center justify-end gap-3 text-xs">
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="rounded-full border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 uppercase tracking-[0.2em] text-[color:var(--mist)] transition hover:border-[color:var(--gold)] hover:text-white"
+              >
+                {t.importJson}
+              </button>
+              <button
+                onClick={downloadConfig}
+                className="rounded-full bg-[color:var(--ember)] px-4 py-2 uppercase tracking-[0.2em] text-white shadow-[0_0_25px_rgba(231,91,58,0.45)] transition hover:-translate-y-0.5"
+              >
+                {t.exportJson}
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-4 text-xs text-[color:var(--mist)]">
+            <label className="flex items-center gap-3">
+              <span className="uppercase tracking-[0.2em]">{t.activeLayout}</span>
+              <select
+                value={activeConfigIndex}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  if (value === "__new__") {
+                    createConfig();
+                    return;
+                  }
+                  setActiveConfigIndex(Number(value));
+                }}
+                className="rounded-full border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 text-white"
+              >
+                {configs.map((config, index) => (
+                  <option key={config.config_name + index} value={index}>
+                    {config.config_name}
+                  </option>
+                ))}
+                <option value="__new__">{t.newLayout}</option>
+              </select>
+            </label>
+            <button
+              onClick={() => {
+                if (configs.length <= 1) return;
+                setPendingRemoveIndex(activeConfigIndex);
+              }}
+              disabled={configs.length <= 1}
+              className="rounded-full border border-red-500/60 px-4 py-2 uppercase tracking-[0.2em] text-red-200 transition hover:border-red-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-red-500/60 disabled:hover:text-red-200"
+            >
+              {t.deleteLayout}
+            </button>
+            <label className="flex items-center gap-3">
+              <span className="uppercase tracking-[0.2em]">{t.name}</span>
+              <input
+                value={activeConfig.config_name}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  updateActiveConfig((config) => ({
+                    ...config,
+                    config_name: value,
+                  }));
+                }}
+                className="rounded-full border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 text-white"
+              />
+            </label>
+            <div className="ml-auto" />
           </div>
           {status ? (
             <div className="rounded-2xl border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 text-xs text-[color:var(--mist)]">
@@ -1484,11 +1507,16 @@ export default function Home() {
             <div className="h-0" />
             <div
               ref={canvasRef}
-              className="relative w-full min-h-[60vh] overflow-visible rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)]/70 shadow-[inset_0_0_40px_rgba(0,0,0,0.45)]"
-              style={{
-                height: canvasBounds.height * safeScale + 40,
-              }}
+              className="w-full min-h-[60vh] overflow-auto rounded-3xl border border-[color:var(--faint)] bg-[color:var(--panel)]/70 shadow-[inset_0_0_40px_rgba(0,0,0,0.45)]"
+              style={{ maxHeight: "80vh" }}
             >
+              <div
+                className="relative"
+                style={{
+                  width: canvasBounds.width * safeScale,
+                  height: canvasBounds.height * safeScale,
+                }}
+              >
               <div
                 className="absolute inset-0 opacity-20"
                 style={{
@@ -1793,11 +1821,12 @@ export default function Home() {
                   </div>
                 );
               })}
+              </div>
             </div>
           </section>
         </div>
       </div>
-      <div className="pointer-events-none fixed bottom-12 right-12 z-40 flex flex-col items-end gap-3">
+      <div className="floating-controls pointer-events-none fixed bottom-12 right-12 z-40 flex flex-col items-end gap-3">
         {editMode ? (
           <div className="pointer-events-auto flex flex-col items-end gap-2">
             <button
