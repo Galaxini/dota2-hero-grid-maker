@@ -21,7 +21,7 @@ export async function apiRequest<T>(
     throw new Error("Missing auth token");
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
+  const response = await fetch("/api/default-grid", {
     method,
     headers: {
       Accept: "application/json",
