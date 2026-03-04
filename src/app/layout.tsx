@@ -14,8 +14,19 @@ const bodyFont = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Dota 2 Hero Grid Maker",
+  metadataBase: new URL("https://herogrid.org"),
+  title: "HeroGrid — Dota 2 Hero Grid Maker",
   description: "Build and export Dota 2 hero grid layouts in your browser.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "HeroGrid — Dota 2 Hero Grid Maker",
+    description: "Build and export Dota 2 hero grid layouts in your browser.",
+    url: "https://herogrid.org",
+    siteName: "HeroGrid",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

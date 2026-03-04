@@ -116,7 +116,7 @@ const insertHeroAt = (ids: number[], heroId: number, index: number) => {
 const translations = {
   en: {
     appKicker: "Dota 2 Grid Workshop",
-    appTitle: "Hero Grid Maker",
+    appTitle: "HeroGrid — Dota 2 Hero Grid Maker",
     appSubtitle:
       "Drag heroes, build categories, and export JSON matching the Dota 2 format.",
     appHint: "Alt + drag = copy, drag without Alt = move.",
@@ -189,7 +189,7 @@ const translations = {
   },
   ru: {
     appKicker: "Dota 2 Grid Workshop",
-    appTitle: "Hero Grid Maker",
+    appTitle: "HeroGrid — Dota 2 Hero Grid Maker",
     appSubtitle:
       "Перетаскивай героев, строй категории и экспортируй JSON, идентичный формату Dota 2.",
     appHint: "Alt + drag = копия, drag без Alt = перенос.",

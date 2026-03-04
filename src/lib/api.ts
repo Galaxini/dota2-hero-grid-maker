@@ -1,5 +1,3 @@
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 const TOKEN_STORAGE_KEY = "dota2-grid-auth-token";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -16,12 +14,13 @@ export async function apiRequest<T>(
   path: string,
   { method = "GET", headers, body, signal, auth }: ApiRequestOptions = {},
 ): Promise<T> {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   const token = auth ? getAuthToken() : null;
   if (auth && !token) {
     throw new Error("Missing auth token");
   }
 
-  const response = await fetch("/api/default-grid", {
+  const response = await fetch(`/api${normalizedPath}`, {
     method,
     headers: {
       Accept: "application/json",
