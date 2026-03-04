@@ -15,7 +15,7 @@ const nextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: "http://dota_api:8080/:path*",
+        destination: "http://api:8080/:path*",
       },
     ];
   },
