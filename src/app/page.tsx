@@ -58,6 +58,7 @@ const HERO_GAP = 8.376072285;
 const GRID_PADDING = HERO_GAP;
 const POOL_ICON_SIZE = 40;
 const BASE_CANVAS_WIDTH = 1182;
+const CATEGORY_HEADER_SPACE = 24;
 
 const heroes = heroData as Hero[];
 const aliases = heroAliases as Record<string, string[]>;
@@ -129,7 +130,7 @@ const translations = {
     deleteLayout: "Delete Layout",
     name: "Name",
     addCategory: "+ Add Category",
-    currentMeta: "Current Meta 7.40b",
+    currentMeta: "Current Meta 7.40c",
     metaHint: "Fixed meta list (temporary).",
     roleCarry: "Carry",
     roleMid: "Mid",
@@ -202,7 +203,7 @@ const translations = {
     deleteLayout: "Удалить лейаут",
     name: "Имя",
     addCategory: "+ Добавить категорию",
-    currentMeta: "Текущая мета 7.40b",
+    currentMeta: "Текущая мета 7.40c",
     metaHint: "Фиксированный список меты (временно).",
     roleCarry: "Керри",
     roleMid: "Мид",
@@ -263,11 +264,11 @@ const translations = {
 } as const;
 
 const META_ROLE_IDS = {
-  carry: [67, 56, 6, 81, 54, 12, 42, 1, 11, 48],
-  mid: [74, 59, 106, 36, 39, 76, 47, 13, 34, 25],
-  offlane: [104, 14, 97, 28, 2, 29, 96, 98, 129, 60],
-  softSupport: [14, 40, 101, 71, 22, 155, 26, 64, 86, 105],
-  hardSupport: [31, 40, 27, 30, 68, 87, 14, 84, 37, 5],
+  carry: [56, 6, 11, 21, 41, 93, 63, 67, 12, 70],
+  mid: [52, 74, 15, 76, 13, 126, 59, 106, 17, 39],
+  offlane: [15, 155, 55, 104, 29, 108, 2, 23, 135, 81],
+  softSupport: [9, 27, 20, 74, 155, 88, 123, 71, 101, 68],
+  hardSupport: [20, 84, 27, 64, 37, 111, 112, 50, 83, 31],
 };
 
 const computeLayout = (
@@ -1349,20 +1350,22 @@ export default function Home() {
             >
               {t.deleteLayout}
             </button>
-            <label className="flex items-center gap-3">
-              <span className="uppercase tracking-[0.2em]">{t.name}</span>
-              <input
-                value={activeConfig.config_name}
-                onChange={(event) => {
-                  const value = event.target.value;
-                  updateActiveConfig((config) => ({
-                    ...config,
-                    config_name: value,
-                  }));
-                }}
-                className="rounded-full border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 text-white"
-              />
-            </label>
+            {editMode ? (
+              <label className="flex items-center gap-3">
+                <span className="uppercase tracking-[0.2em]">{t.name}</span>
+                <input
+                  value={activeConfig.config_name}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    updateActiveConfig((config) => ({
+                      ...config,
+                      config_name: value,
+                    }));
+                  }}
+                  className="rounded-full border border-[color:var(--faint)] bg-[color:var(--panel-bright)] px-4 py-2 text-white"
+                />
+              </label>
+            ) : null}
             <div className="ml-auto" />
           </div>
           {status ? (
@@ -1514,7 +1517,7 @@ export default function Home() {
                 className="relative"
                 style={{
                   width: canvasBounds.width * safeScale,
-                  height: canvasBounds.height * safeScale,
+                  height: (canvasBounds.height + CATEGORY_HEADER_SPACE) * safeScale,
                 }}
               >
               <div
@@ -1576,7 +1579,7 @@ export default function Home() {
                     }`}
                     style={{
                       left: category.x_position * scale,
-                      top: category.y_position * scale,
+                      top: (category.y_position + CATEGORY_HEADER_SPACE) * scale,
                       width: category.width * scale,
                       height: category.height * scale,
                       transformOrigin: "top left",
